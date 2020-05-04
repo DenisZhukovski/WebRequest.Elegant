@@ -1,21 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace WebRequest.Elegant
 {
-    public sealed class WebRequest : IWebRequest
+    public sealed class WebRequest : IWebRequest, IDisposable
     {
         private readonly HttpMethod _method;
         private readonly IJsonObject _postBody;
         private readonly Dictionary<string, string> _queryParams;
         private readonly HttpClient _httpClient;
+        private static Dictionary<HttpClient, int> _objectUsageCount = new Dictionary<HttpClient, int>();
 
         public WebRequest(
             string uriString,
-            HttpClient httpClient)
-            : this(new Uri(uriString), httpClient)
+            HttpClient httpClient
+        ) : this(new Uri(uriString), httpClient)
         {
         }
 
@@ -46,6 +48,11 @@ namespace WebRequest.Elegant
             _postBody = postBody ?? throw new ArgumentNullException(nameof(postBody));
             _queryParams = queryParams ?? throw new ArgumentNullException(nameof(queryParams));
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+            if (!_objectUsageCount.ContainsKey(_httpClient))
+            {
+                _objectUsageCount.Add(_httpClient, 0);
+            }
+            _objectUsageCount[_httpClient]++;
         }
 
         public IToken Token { get; }
@@ -73,7 +80,8 @@ namespace WebRequest.Elegant
                 _method,
                 _postBody,
                 _queryParams,
-                _httpClient);
+                _httpClient
+            );
         }
 
         public IWebRequest Method(HttpMethod method)
@@ -102,16 +110,54 @@ namespace WebRequest.Elegant
         {
             var request = new HttpRequestMessage(
                 method,
-                new QueryParamsAsString(_queryParams).With(Uri));
-
+                new QueryParamsAsString(_queryParams).With(Uri)
+            );
             var postBodyString = _postBody.ToJson();
             if (!string.IsNullOrEmpty(postBodyString))
             {
-                request.Content = new StringContent(postBodyString);
+                request.Content = new StringContent(postBodyString, Encoding.UTF8, "application/json");
             }
-
             Token.InjectTo(request);
             return request;
         }
+
+        #region IDisposable Support
+
+        private bool disposedValue = false; // To detect redundant calls
+
+        void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    _objectUsageCount[_httpClient]--;
+                    if (_objectUsageCount[_httpClient] == 0)
+                    {
+                        _httpClient.Dispose();
+                    }
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
+                // TODO: set large fields to null.
+                disposedValue = true;
+            }
+        }
+
+        ~WebRequest()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(false);
+        }
+
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        #endregion
     }
 }

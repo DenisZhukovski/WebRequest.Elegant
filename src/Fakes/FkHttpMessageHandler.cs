@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -37,7 +38,7 @@ namespace WebRequest.Elegant.Fakes
         /// <summary>
         /// Gets as a string the request that has been sent last.
         /// </summary>
-        public string RequestAsString { get; private set; }
+        public List<string> RequestsAsString { get; private set; } = new List<string>();
 
         /// <summary>
         /// Simulates sending to the server.
@@ -57,7 +58,7 @@ namespace WebRequest.Elegant.Fakes
                     .ConfigureAwait(false);
             }
 
-            RequestAsString = $"Request: {request.RequestUri}\nPostBody: {postContent}";
+            RequestsAsString.Add($"Request: {request.RequestUri}\nPostBody: {postContent}");
             return _httpResponseMessage;
         }
     }

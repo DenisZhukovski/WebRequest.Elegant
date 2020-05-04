@@ -73,7 +73,8 @@ namespace WebRequest.Elegant
                 _method,
                 _postBody,
                 _queryParams,
-                _httpClient);
+                _httpClient
+            );
         }
 
         public IWebRequest Method(HttpMethod method)
@@ -102,14 +103,13 @@ namespace WebRequest.Elegant
         {
             var request = new HttpRequestMessage(
                 method,
-                new QueryParamsAsString(_queryParams).With(Uri));
-
+                new QueryParamsAsString(_queryParams).With(Uri)
+            );
             var postBodyString = _postBody.ToJson();
             if (!string.IsNullOrEmpty(postBodyString))
             {
                 request.Content = new StringContent(postBodyString);
             }
-
             Token.InjectTo(request);
             return request;
         }

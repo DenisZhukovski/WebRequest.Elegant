@@ -138,16 +138,8 @@ namespace WebRequest.Elegant
                     }
                 }
 
-                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
-                // TODO: set large fields to null.
                 disposedValue = true;
             }
-        }
-
-        ~WebRequest()
-        {
-            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-            Dispose(false);
         }
 
         // This code added to correctly implement the disposable pattern.
@@ -155,7 +147,6 @@ namespace WebRequest.Elegant
         {
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
             Dispose(true);
-            GC.SuppressFinalize(this);
         }
 
         #endregion

@@ -12,7 +12,7 @@ namespace WebRequest.Elegant
         private readonly IJsonObject _postBody;
         private readonly Dictionary<string, string> _queryParams;
         private readonly HttpClient _httpClient;
-        private static Dictionary<HttpClient, int> _objectUsageCount = new Dictionary<HttpClient, int>();
+        private static readonly Dictionary<HttpClient, int> _objectUsageCount = new Dictionary<HttpClient, int>();
 
         public WebRequest(
             string uriString,
@@ -23,14 +23,23 @@ namespace WebRequest.Elegant
 
         public WebRequest(
             Uri uri,
-            HttpClient httpClient)
-            : this(
-                new HttpAuthenticationHeaderToken(),
+            HttpClient httpClient
+        ) : this(uri, new HttpAuthenticationHeaderToken(), httpClient)
+        {
+        }
+
+        public WebRequest(
+            Uri uri,
+            IToken token,
+            HttpClient httpClient
+        ) : this(
+                token,
                 uri,
                 HttpMethod.Get,
                 new EmptyJsonObject(),
                 new Dictionary<string, string>(),
-                httpClient)
+                httpClient
+            )
         {
         }
 

@@ -21,6 +21,11 @@ namespace WebRequest.Elegant
         Uri Uri { get; }
 
         /// <summary>
+        ///     Get the web request http method.
+        /// </summary>
+        HttpMethod HttpMethod { get; }
+
+        /// <summary>
         /// Executes the web request.
         /// </summary>
         /// <returns>Return response.</returns>

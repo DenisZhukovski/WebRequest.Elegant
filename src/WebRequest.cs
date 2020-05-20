@@ -8,7 +8,6 @@ namespace WebRequest.Elegant
 {
     public sealed class WebRequest : IWebRequest, IDisposable
     {
-        private readonly HttpMethod _method;
         private readonly IJsonObject _postBody;
         private readonly Dictionary<string, string> _queryParams;
         private readonly HttpClient _httpClient;
@@ -53,7 +52,7 @@ namespace WebRequest.Elegant
         {
             Uri = uri ?? throw new ArgumentNullException(nameof(uri));
             Token = token ?? throw new ArgumentNullException(nameof(token));
-            _method = method ?? throw new ArgumentNullException(nameof(method));
+            HttpMethod = method ?? throw new ArgumentNullException(nameof(method));
             _postBody = postBody ?? throw new ArgumentNullException(nameof(postBody));
             _queryParams = queryParams ?? throw new ArgumentNullException(nameof(queryParams));
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
@@ -68,9 +67,11 @@ namespace WebRequest.Elegant
 
         public Uri Uri { get; }
 
+        public HttpMethod HttpMethod { get; }
+
         public async Task<HttpResponseMessage> GetAsync()
         {
-            var requestMessage = RequestMessage(_method);
+            var requestMessage = RequestMessage(HttpMethod);
             try
             {
                 return await _httpClient.SendAsync(requestMessage);
@@ -86,7 +87,7 @@ namespace WebRequest.Elegant
             return new WebRequest(
                 Token,
                 uri,
-                _method,
+                HttpMethod,
                 _postBody,
                 _queryParams,
                 _httpClient
@@ -95,17 +96,31 @@ namespace WebRequest.Elegant
 
         public IWebRequest Method(HttpMethod method)
         {
-            return new WebRequest(Token, Uri, method, _postBody, _queryParams, _httpClient);
+            return new WebRequest(
+                Token, 
+                Uri, 
+                method, 
+                _postBody, 
+                _queryParams, 
+                _httpClient
+            );
         }
 
         public IWebRequest QueryParams(Dictionary<string, string> parameters)
         {
-            return new WebRequest(Token, Uri, _method, _postBody, parameters, _httpClient);
+            return new WebRequest(
+                Token, 
+                Uri,
+                HttpMethod, 
+                _postBody, 
+                parameters, 
+                _httpClient
+            );
         }
 
         public IWebRequest Body(IJsonObject postBody)
         {
-            return new WebRequest(Token, Uri, _method, postBody, _queryParams, _httpClient);
+            return new WebRequest(Token, Uri, HttpMethod, postBody, _queryParams, _httpClient);
         }
 
         public override string ToString()

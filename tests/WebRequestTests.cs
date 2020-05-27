@@ -36,12 +36,12 @@ namespace WebRequest.Tests
                                  )
                   )
             {
-                using (var secondRequest = (Elegant.WebRequest)request.Method(HttpMethod.Post))
+                using (var secondRequest = (Elegant.WebRequest)request.WithMethod(HttpMethod.Post))
                 {
-                    var secondResponse = await secondRequest.GetAsync();
+                    var secondResponse = await secondRequest.GetResponseAsync();
                 }
 
-                var firstResponse = request.GetAsync();
+                var firstResponse = request.GetResponseAsync();
             }
 
             Assert.AreEqual(2, fakeResponse.RequestsAsString.Count);

@@ -8,7 +8,6 @@ namespace WebRequest.Elegant
 {
     public sealed class WebRequest : IWebRequest, IDisposable
     {
-        private readonly IJsonObject _postBody;
         private readonly Dictionary<string, string> _queryParams;
         private readonly HttpClient _httpClient;
         private static readonly Dictionary<HttpClient, int> _objectUsageCount = new Dictionary<HttpClient, int>();
@@ -46,14 +45,14 @@ namespace WebRequest.Elegant
             IToken token,
             Uri uri,
             HttpMethod method,
-            IJsonObject postBody,
+            IJsonObject body,
             Dictionary<string, string> queryParams,
             HttpClient httpClient)
         {
             Uri = uri ?? throw new ArgumentNullException(nameof(uri));
             Token = token ?? throw new ArgumentNullException(nameof(token));
             HttpMethod = method ?? throw new ArgumentNullException(nameof(method));
-            _postBody = postBody ?? throw new ArgumentNullException(nameof(postBody));
+            Body = body ?? throw new ArgumentNullException(nameof(body));
             _queryParams = queryParams ?? throw new ArgumentNullException(nameof(queryParams));
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
             if (!_objectUsageCount.ContainsKey(_httpClient))
@@ -69,7 +68,9 @@ namespace WebRequest.Elegant
 
         public HttpMethod HttpMethod { get; }
 
-        public async Task<HttpResponseMessage> GetAsync()
+        public IJsonObject Body { get; }
+
+        public async Task<HttpResponseMessage> GetResponseAsync()
         {
             var requestMessage = RequestMessage(HttpMethod);
             try
@@ -82,52 +83,52 @@ namespace WebRequest.Elegant
             }
         }
 
-        public IWebRequest Path(Uri uri)
+        public IWebRequest WithPath(Uri uri)
         {
             return new WebRequest(
                 Token,
                 uri,
                 HttpMethod,
-                _postBody,
+                Body,
                 _queryParams,
                 _httpClient
             );
         }
 
-        public IWebRequest Method(HttpMethod method)
+        public IWebRequest WithMethod(HttpMethod method)
         {
             return new WebRequest(
-                Token, 
-                Uri, 
-                method, 
-                _postBody, 
-                _queryParams, 
-                _httpClient
-            );
-        }
-
-        public IWebRequest QueryParams(Dictionary<string, string> parameters)
-        {
-            return new WebRequest(
-                Token, 
+                Token,
                 Uri,
-                HttpMethod, 
-                _postBody, 
-                parameters, 
+                method,
+                Body,
+                _queryParams,
                 _httpClient
             );
         }
 
-        public IWebRequest Body(IJsonObject postBody)
+        public IWebRequest WithQueryParams(Dictionary<string, string> parameters)
         {
-            return new WebRequest(Token, Uri, HttpMethod, postBody, _queryParams, _httpClient);
+            return new WebRequest(
+                Token,
+                Uri,
+                HttpMethod,
+                Body,
+                parameters,
+                _httpClient
+            );
+        }
+
+        public IWebRequest WithBody(IJsonObject body)
+        {
+            return new WebRequest(Token, Uri, HttpMethod, body, _queryParams, _httpClient);
         }
 
         public override string ToString()
         {
             return $"Uri: {new QueryParamsAsString(_queryParams).With(Uri)}\n" +
                    $"Token: {Token}\n" +
-                   $"PostBody: {_postBody.ToJson()}";
+                   $"Body: {Body.ToJson()}";
         }
 
         private HttpRequestMessage RequestMessage(HttpMethod method)
@@ -136,10 +137,10 @@ namespace WebRequest.Elegant
                 method,
                 new QueryParamsAsString(_queryParams).With(Uri)
             );
-            var postBodyString = _postBody.ToJson();
-            if (!string.IsNullOrEmpty(postBodyString))
+            var bodyJsonString = Body.ToJson();
+            if (!string.IsNullOrEmpty(bodyJsonString))
             {
-                request.Content = new StringContent(postBodyString, Encoding.UTF8, "application/json");
+                request.Content = new StringContent(bodyJsonString, Encoding.UTF8, "application/json");
             }
             Token.InjectTo(request);
             return request;

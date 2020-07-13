@@ -18,6 +18,11 @@ steps:
 - task: DownloadSecureFile@1
   inputs:
     secureFile: 'webrequest.elegant.key.pfx'
+- task: CopyFiles@2
+  displayName: 'Copy Files to: $(Build.SourcesDirectory)\src'
+  inputs:
+    SourceFolder: '$(Agent.TempDirectory)'
+    TargetFolder: '$(Build.SourcesDirectory)\src'
 - task: NuGetToolInstaller@1
 
 - task: NuGetCommand@2

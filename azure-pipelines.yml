@@ -16,13 +16,19 @@ variables:
 
 steps:
 - task: DownloadSecureFile@1
+  name: caCertificate
   inputs:
     secureFile: 'webrequest.elegant.key.pfx'
-- task: CopyFiles@2
-  displayName: 'Copy Files to: $(Build.SourcesDirectory)\src'
-  inputs:
-    SourceFolder: '$(Agent.TempDirectory)'
-    TargetFolder: '$(Build.SourcesDirectory)\src'
+# - task: CopyFiles@2
+#   displayName: 'Copy Files to: $(Build.SourcesDirectory)\src'
+#   inputs:
+#     SourceFolder: '$(Agent.TempDirectory)'
+#     TargetFolder: '$(Build.SourcesDirectory)\src'
+- script: |
+    echo Installing $(caCertificate.secureFilePath) to the trusted CA directory...
+    sudo chown root:root $(caCertificate.secureFilePath)
+    sudo chmod a+r $(caCertificate.secureFilePath)
+    sudo ln -s -t /etc/ssl/certs/ $(caCertificate.secureFilePath)
 - task: NuGetToolInstaller@1
 
 - task: NuGetCommand@2

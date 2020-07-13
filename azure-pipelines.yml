@@ -41,7 +41,7 @@ steps:
       $store.Open([System.Security.Cryptography.X509Certificates.OpenFlags]"ReadWrite")
       $store.Add($cert)
       $store.Close()
-      sn -i "$(caCertificate.secureFilePath" VS_KEY_14A4DA8CDECBD408
+      sn -i '$(caCertificate.secureFilePath' VS_KEY_14A4DA8CDECBD408
 
 - task: NuGetToolInstaller@1
 

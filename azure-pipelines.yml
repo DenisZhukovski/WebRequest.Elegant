@@ -19,11 +19,11 @@ steps:
   name: caCertificate
   inputs:
     secureFile: 'webrequest.elegant.key.pfx'
-# - task: CopyFiles@2
-#   displayName: 'Copy Files to: $(Build.SourcesDirectory)\src'
-#   inputs:
-#     SourceFolder: '$(Agent.TempDirectory)'
-#     TargetFolder: '$(Build.SourcesDirectory)\src'
+- task: CopyFiles@2
+  displayName: 'Copy Files to: $(Build.SourcesDirectory)\src'
+  inputs:
+    SourceFolder: '$(Agent.TempDirectory)'
+    TargetFolder: '$(Build.SourcesDirectory)\src'
 # - task: PowerShell@2
 #   displayName: 'Import-PfxCertificate'
 #   inputs:
@@ -54,7 +54,7 @@ steps:
     solution: '$(solution)'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
-    msbuildArgs: '/p:PackageCertificateThumbprint="" /p:PackageCertificateKeyFile="$(caCertificate.secureFilePath)"'
+    msbuildArgs: '/p:PackageCertificateThumbprint="" /p:PackageCertificateKeyFile="$(caCertificate.secureFilePath)" /p:PackageCertificatePassword="$(signingCert.password)"'
 
 - task: VSTest@2
   inputs:

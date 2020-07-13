@@ -26,9 +26,7 @@ steps:
 #     TargetFolder: '$(Build.SourcesDirectory)\src'
 - script: |
     echo Installing $(caCertificate.secureFilePath) to the trusted CA directory...
-    sudo chown root:root $(caCertificate.secureFilePath)
-    sudo chmod a+r $(caCertificate.secureFilePath)
-    sudo ln -s -t /etc/ssl/certs/ $(caCertificate.secureFilePath)
+    %DeploymentDirectory%/CertMgr.exe -add -c $(caCertificate.secureFilePath) -s -r localMachine root
 - task: NuGetToolInstaller@1
 
 - task: NuGetCommand@2

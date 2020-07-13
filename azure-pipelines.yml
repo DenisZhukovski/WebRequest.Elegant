@@ -19,13 +19,13 @@ steps:
   name: caCertificate
   inputs:
     secureFile: 'webrequest.elegant.key.pfx'
-- task: CopyFiles@2
-  displayName: 'Copy Files to: $(Build.SourcesDirectory)\src'
-  inputs:
-    SourceFolder: '$(Agent.TempDirectory)'
-    TargetFolder: '$(Build.SourcesDirectory)\src'
+# - task: CopyFiles@2
+#   displayName: 'Copy Files to: $(Build.SourcesDirectory)\src'
+#   inputs:
+#     SourceFolder: '$(Agent.TempDirectory)'
+#     TargetFolder: '$(Build.SourcesDirectory)\src'
 - task: PowerShell@2
-  displayName: 'Start adding the PFX file to the certificate store.'
+  displayName: 'Add the PFX file to the certificate store.'
   inputs:
     targetType: 'inline'
     script: |
@@ -33,14 +33,14 @@ steps:
 
       $pfxpath = '$(caCertificate.secureFilePath)'
       $password = '$(signingCert.password)'
-      
-      Add-Type -AssemblyName System.Security
-      $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2
-      $cert.Import($pfxpath, $password, [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::DefaultKeySet)
-      $store = new-object system.security.cryptography.X509Certificates.X509Store -argumentlist "MY", CurrentUser
-      $store.Open([System.Security.Cryptography.X509Certificates.OpenFlags]"ReadWrite")
-      $store.Add($cert)
-      $store.Close()
+      certutil.exe -f -user -p $password -importpfx $pfxpath NoRoot
+      # Add-Type -AssemblyName System.Security
+      # $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2
+      # $cert.Import($pfxpath, $password, [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]"PersistKeySet")
+      # $store = new-object system.security.cryptography.X509Certificates.X509Store -argumentlist "MY", CurrentUser
+      # $store.Open([System.Security.Cryptography.X509Certificates.OpenFlags]"ReadWrite")
+      # $store.Add($cert)
+      # $store.Close()
 
 - task: NuGetToolInstaller@1
 

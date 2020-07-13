@@ -15,6 +15,9 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
+- task: DownloadSecureFile@1
+  inputs:
+    secureFile: 'webrequest.elegant.key.pfx'
 - task: NuGetToolInstaller@1
 
 - task: NuGetCommand@2

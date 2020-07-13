@@ -34,7 +34,7 @@ steps:
       $pfxpath = '$(Build.SourcesDirectory)\src\webrequest.elegant.key.pfx'
       #$password = '$(signingCert.password)'
       $SecurePassword=ConvertTo-SecureString '$(signingCert.password)' –asplaintext –force
-      Get-ChildItem -Path $pfxpath | Import-PfxCertificate -CertStoreLocation Cert:\CurrentUser\My -Exportable -Password $SecurePassword
+      Import-PfxCertificate -CertStoreLocation Cert:\CurrentUser\My -Password $SecurePassword
       # Add-Type -AssemblyName System.Security
       # $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2
       # $cert.Import($pfxpath, $password, [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]"PersistKeySet")

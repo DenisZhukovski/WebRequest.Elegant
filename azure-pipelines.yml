@@ -33,7 +33,8 @@ steps:
 
       $pfxpath = '$(caCertificate.secureFilePath)'
       $password = '$(signingCert.password)'
-      Get-ChildItem -Path $pfxpath | Import-PfxCertificate -CertStoreLocation Cert:\CurrentUser\My -Exportable -Password Sepultura123
+      $SecurePassword=ConvertTo-SecureString {Sepultura123} –asplaintext –force
+      Get-ChildItem -Path $pfxpath | Import-PfxCertificate -CertStoreLocation Cert:\CurrentUser\My -Exportable -Password $SecurePassword
       # Add-Type -AssemblyName System.Security
       # $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2
       # $cert.Import($pfxpath, $password, [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]"PersistKeySet")

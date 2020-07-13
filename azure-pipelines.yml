@@ -54,7 +54,10 @@ steps:
     solution: '$(solution)'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
-    msbuildArgs: '/p:AppxPackageSigningEnabled=true /p:PackageCertificateThumbprint="" /p:PackageCertificateKeyFile="$(caCertificate.secureFilePath)" /p:PackageCertificatePassword="$(signingCert.password)"'
+    msbuildArgs: '/p:AppxPackageSigningEnabled=true \
+                  /p:PackageCertificateThumbprint="$(caCertificate.thumbprint)" \
+                  /p:PackageCertificateKeyFile="$(caCertificate.secureFilePath)" \
+                  /p:PackageCertificatePassword="$(signingCert.password)"'
 
 - task: VSTest@2
   inputs:

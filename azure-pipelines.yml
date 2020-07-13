@@ -19,11 +19,11 @@ steps:
   name: caCertificate
   inputs:
     secureFile: 'webrequest.elegant.key.pfx'
-- task: CopyFiles@2
-  displayName: 'Copy Files to: $(Build.SourcesDirectory)\src'
-  inputs:
-    SourceFolder: '$(Agent.TempDirectory)'
-    TargetFolder: '$(Build.SourcesDirectory)\src'
+# - task: CopyFiles@2
+#   displayName: 'Copy Files to: $(Build.SourcesDirectory)\src'
+#   inputs:
+#     SourceFolder: '$(Agent.TempDirectory)'
+#     TargetFolder: '$(Build.SourcesDirectory)\src'
 # - task: PowerShell@2
 #   displayName: 'Import-PfxCertificate'
 #   inputs:

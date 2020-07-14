@@ -15,33 +15,6 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-- task: DownloadSecureFile@1
-  name: caCertificate
-  inputs:
-    secureFile: 'webrequest.elegant.key.pfx'
-# - task: CopyFiles@2
-#   displayName: 'Copy Files to: $(Build.SourcesDirectory)\src'
-#   inputs:
-#     SourceFolder: '$(Agent.TempDirectory)'
-#     TargetFolder: '$(Build.SourcesDirectory)\src'
-# - task: PowerShell@2
-#   displayName: 'Import-PfxCertificate'
-#   inputs:
-#     targetType: 'inline'
-#     script: |
-#       Write-Host "Start adding the PFX file to the certificate store."
-
-#       $pfxpath = '$(Build.SourcesDirectory)\src\webrequest.elegant.key.pfx'
-#       #$password = '$(signingCert.password)'
-#       $SecurePassword=ConvertTo-SecureString '$(signingCert.password)' –asplaintext –force
-#       Get-ChildItem -Path $pfxpath | Import-PfxCertificate -CertStoreLocation Cert:\CurrentUser\My -Password $SecurePassword
-#       # Add-Type -AssemblyName System.Security
-#       # $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2
-#       # $cert.Import($pfxpath, $password, [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]"PersistKeySet")
-#       # $store = new-object system.security.cryptography.X509Certificates.X509Store -argumentlist "MY", CurrentUser
-#       # $store.Open([System.Security.Cryptography.X509Certificates.OpenFlags]"ReadWrite")
-#       # $store.Add($cert)
-#       # $store.Close()
 
 - task: NuGetToolInstaller@1
 
@@ -54,7 +27,6 @@ steps:
     solution: '$(solution)'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
-    msbuildArgs: '/p:AppxPackageSigningEnabled=true /p:PackageCertificateThumbprint="$(caCertificate.thumbprint)" /p:PackageCertificateKeyFile="$(caCertificate.secureFilePath)" /p:PackageCertificatePassword="$(signingCert.password)"'
 
 - task: VSTest@2
   inputs:

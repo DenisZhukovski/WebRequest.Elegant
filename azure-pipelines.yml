@@ -22,11 +22,29 @@ steps:
   inputs:
     restoreSolution: '$(solution)'
 
+# - task: Assembly-Info-NetCore@2
+#   inputs:
+#     Path: '$(Build.SourcesDirectory)'
+#     FileNames: '**/*.csproj'
+#     InsertAttributes: false
+#     FileEncoding: 'auto'
+#     WriteBOM: false
+#     GeneratePackageOnBuild: true
+#     PackageId: 'WebRequest.Elegant'
+#     Authors: 'Denis Zhukovski'
+#     Product: 'WebRequest.Elegant'
+#     PackageProjectUrl: 'https://github.com/DenisZhukovski/WebRequest.Elegant'
+#     RepositoryUrl: 'https://github.com/DenisZhukovski/WebRequest.Elegant'
+#     VersionNumber: 1.0.$(Build.BuildId)
+#     LogLevel: 'verbose'
+#     FailOnWarning: false
+#     DisableTelemetry: false
 - task: VSBuild@1
   inputs:
     solution: '$(solution)'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
+    msbuildArgs: '/p: Version=1.0.$(Build.BuildId)'
 
 - task: VSTest@2
   inputs:

@@ -27,7 +27,6 @@ steps:
     solution: '$(solution)'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
-    msbuildArgs: '/p: Version=1.0.$(Build.BuildId)'
 
 - task: VSTest@2
   inputs:

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WebRequest.Elegant.Extensions
+namespace WebRequest.Elegant
 {
     public static class WebRequestExtensions
     {

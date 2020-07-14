@@ -17,7 +17,9 @@ variables:
 steps:
 
 - task: NuGetToolInstaller@1
-
+- task: NuGetAuthenticate@0
+  inputs:
+    nuGetServiceConnections: 'WebRequest.Elegant'
 - task: NuGetCommand@2
   inputs:
     restoreSolution: '$(solution)'
@@ -39,19 +41,8 @@ steps:
     packagesToPack: '**/*.csproj'
     versioningScheme: 'byPrereleaseNumber'
 
-# - task: DotNetCoreCLI@2
-#   inputs:
-#     command: 'push'
-#     packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
-#     nuGetFeedType: 'external'
-#     publishFeedCredentials: 'WebRequest.Elegant'
-
 - task: DotNetCoreCLI@2
-  displayName: Push Nuget Package
   inputs:
-    command: custom
-    custom: nuget
-    arguments: >
-      push $(Build.ArtifactStagingDirectory)/*.nupkg
-      -s $(NuGetSourceServerUrl)
-      -k $(NuGetSourceServerApiKey)
+    command: 'push'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
+    nuGetFeedType: 'external'

@@ -1,6 +1,3 @@
-# WebRequest.Elegant
-Object oriented web request
-
 <h3 align="center">
 
   [![NuGet](https://img.shields.io/nuget/v/WebRequest.Elegant.svg)](https://www.nuget.org/packages/WebRequest.Elegant/)
@@ -9,3 +6,6 @@ Object oriented web request
   [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE.md)
 
 </h3>
+
+# WebRequest.Elegant
+Object oriented web request

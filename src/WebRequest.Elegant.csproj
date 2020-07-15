@@ -2,10 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <SignAssembly>false</SignAssembly>
-    <AssemblyOriginatorKeyFile>webrequest.elegant.key.pfx</AssemblyOriginatorKeyFile>
     <Authors>Denis Zhukovski</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Version>1.0.5</Version>
+    <Version>1.0.6</Version>
   </PropertyGroup>
 </Project>

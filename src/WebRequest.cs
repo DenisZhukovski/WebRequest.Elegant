@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace WebRequest.Elegant
 {
-    public sealed class WebRequest : IWebRequest, IDisposable
+    public sealed class WebRequest : IWebRequest
     {
         private readonly Dictionary<string, string> _queryParams;
         private readonly HttpClient _httpClient;
-        private static readonly Dictionary<HttpClient, int> _objectUsageCount = new Dictionary<HttpClient, int>();
 
         public WebRequest(
             string uriString,
@@ -55,11 +54,6 @@ namespace WebRequest.Elegant
             Body = body ?? throw new ArgumentNullException(nameof(body));
             _queryParams = queryParams ?? throw new ArgumentNullException(nameof(queryParams));
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
-            if (!_objectUsageCount.ContainsKey(_httpClient))
-            {
-                _objectUsageCount.Add(_httpClient, 0);
-            }
-            _objectUsageCount[_httpClient]++;
         }
 
         public IToken Token { get; }
@@ -121,7 +115,14 @@ namespace WebRequest.Elegant
 
         public IWebRequest WithBody(IJsonObject body)
         {
-            return new WebRequest(Token, Uri, HttpMethod, body, _queryParams, _httpClient);
+            return new WebRequest(
+                Token, 
+                Uri, 
+                HttpMethod, 
+                body, 
+                _queryParams, 
+                _httpClient
+            );
         }
 
         public override string ToString()
@@ -145,35 +146,5 @@ namespace WebRequest.Elegant
             Token.InjectTo(request);
             return request;
         }
-
-        #region IDisposable Support
-
-        private bool disposedValue = false; // To detect redundant calls
-
-        void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    _objectUsageCount[_httpClient]--;
-                    if (_objectUsageCount[_httpClient] == 0)
-                    {
-                        _httpClient.Dispose();
-                    }
-                }
-
-                disposedValue = true;
-            }
-        }
-
-        // This code added to correctly implement the disposable pattern.
-        public void Dispose()
-        {
-            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-            Dispose(true);
-        }
-
-        #endregion
     }
 }

@@ -7,7 +7,7 @@
   [![Hits-of-Code](https://hitsofcode.com/github/deniszhukovski/webrequest.elegant)](https://hitsofcode.com/view/github/deniszhukovski/webrequest.elegant)
   [![EO principles respected here](https://www.elegantobjects.org/badge.svg)](https://www.elegantobjects.org)
   [![PDD status](https://www.0pdd.com/svg?name=deniszhukovski/webrequest.elegant)](https://www.0pdd.com/p?name=deniszhukovski/webrequest.elegant)
-  [![Maintainability](https://api.codeclimate.com/v1/badges/7462387124cf5f9b8ef8/maintainability)](https://codeclimate.com/github/deniszhukovski/webrequest.elegant)
+  [![Maintainability](https://api.codeclimate.com/v1/badges/7462387124cf5f9b8ef8/maintainability)](https://codeclimate.com/github/DenisZhukovski/WebRequest.Elegant)
 </h3>
 
 # WebRequest.Elegant

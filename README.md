@@ -11,8 +11,10 @@
 </h3>
 
 # WebRequest.Elegant
-The main idea is to wrap HttpClient type with some more elegant and object oriented entity. The entity provides immutable objects by cloning itself and able to make requests to different end points.
+The main idea is to wrap HttpClient type with more elegant and object oriented entity. The entity provides immutable objects by cloning itself and able to make requests to different end points.
 
-var server = new WebRequest("http://some.server.com")
+```cs
+var server = new WebRequest("http://some.server.com"); // application create the WebRequest only once and the reuse it.
 var usersRequest = server.WithRelativePath("/users");
+```
 

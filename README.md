@@ -11,4 +11,8 @@
 </h3>
 
 # WebRequest.Elegant
-Object oriented web request
+The main idea is to wrap HttpClient type with some more elegant and object oriented entity. The eintity provides immutable objects by clonning itself and able to make requests to differrent end points.
+
+var server = new WebRequest("http://some.server.com")
+var usersRequest = server.WithRelativePath("/users");
+

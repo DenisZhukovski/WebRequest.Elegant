@@ -15,7 +15,8 @@ The main idea is to wrap HttpClient type with more elegant and object oriented e
 
 ```cs
 var server = new WebRequest("http://some.server.com"); // application create the WebRequest only once and the reuse it.
-var usersRequest = server.WithRelativePath("/users"); // new object is been created and 
-                                                      // refers to http://some.server.com/users
+var users = server.WithRelativePath("/users"); // new WebRequest object will be created and 
+                                               // refers to http://some.server.com/users
+var usersResponse = await users.GetResponseAsync();
 ```
 

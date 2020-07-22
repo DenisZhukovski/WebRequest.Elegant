@@ -14,7 +14,7 @@
 The main idea is to wrap HttpClient type with more elegant and object oriented entity. The entity provides immutable objects by cloning itself and able to make requests to different end points. It's assumed that developers create the WebRequest entity only once in the app at startup and then clonning it in other places to complete the reuqest.
 
 ```cs
-var server = new WebRequest("http://some.server.com"); // application create the WebRequest only once and the reuse it.
+var server = new WebRequest("http://some.server.com"); // An application creates the WebRequest only once and then reuses it.
 ```
 Once it has been created developers should inject it as a constructor argument to all the entities that may need it.
 

@@ -27,12 +27,12 @@ public class Users
     _server = server;
   }
   
-  public IList<User> ToList()
+  public async Task<IList<User>> ToListAsync()
   {
     var usersRequest = server.WithRelativePath("/users"); // new WebRequest object will be created and 
                                                           // refers to http://some.server.com/users
     var usersResponse = await usersRequest.GetResponseAsync();
-    // parse the resposne and create list of users
+    return ... // parse the resposne and create list of users
   }
 }
 ```

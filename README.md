@@ -31,7 +31,7 @@ public class Users
   {
     var usersRequest = server.WithRelativePath("/users"); // new WebRequest object will be created and 
                                                           // refers to http://some.server.com/users
-    var usersResponse = await users.GetResponseAsync();
+    var usersResponse = await usersRequest.GetResponseAsync();
     // parse the resposne and create list of users
   }
 }

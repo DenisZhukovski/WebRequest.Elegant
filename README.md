@@ -1,3 +1,4 @@
+# WebRequest.Elegant
 <h3 align="center">
   
   [![NuGet](https://img.shields.io/nuget/v/WebRequest.Elegant.svg)](https://www.nuget.org/packages/WebRequest.Elegant/)
@@ -10,7 +11,6 @@
   [![Maintainability](https://api.codeclimate.com/v1/badges/a99a88d28ad37a79dbf6/maintainability)](https://codeclimate.com/github/DenisZhukovski/WebRequest.Elegant)
 </h3>
 
-# WebRequest.Elegant
 The main idea is to wrap HttpClient type with more elegant and object oriented entity. The entity provides immutable objects by cloning itself and able to make requests to different end points. It's assumed that developers create the WebRequest entity only once in the app at startup and then clonning it in other places to complete the reuqest.
 
 ```cs

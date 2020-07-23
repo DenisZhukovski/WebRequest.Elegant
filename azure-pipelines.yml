@@ -31,7 +31,17 @@ steps:
   inputs:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
-
+- task: SonarCloudPrepare@1
+  inputs:
+    SonarCloud: 'Sonar Cloud'
+    organization: 'deniszhukovski'
+    scannerMode: 'MSBuild'
+    projectKey: 'WebRequest.Elegant'
+    projectName: 'WebRequest.Elegant'
+- task: SonarCloudAnalyze@1
+- task: SonarCloudPublish@1
+  inputs:
+    pollingTimeoutSec: '300'
 # - task: DotNetCoreCLI@2
 #   inputs:
 #     command: 'pack'

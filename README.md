@@ -38,12 +38,11 @@ public class Users
 
 ## Build status
 
-<h3 align="center">
-  [![Azure Pipelines Windows](https://dev.azure.com/dotnet/BenchmarkDotNet/_apis/build/status/BenchmarkDotNet%20-%20Windows)](https://dev.azure.com/dotnet/BenchmarkDotNet/_build/latest?definitionId=55)
+<div align="center">
   [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=DenisZhukovski_WebRequest.Elegant&metric=alert_status)](https://sonarcloud.io/dashboard?id=DenisZhukovski_WebRequest.Elegant)
   [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=DenisZhukovski_WebRequest.Elegant&metric=coverage)](https://sonarcloud.io/dashboard?id=DenisZhukovski_WebRequest.Elegant)
   [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=DenisZhukovski_WebRequest.Elegant&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=DenisZhukovski_WebRequest.Elegant)
   [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=DenisZhukovski_WebRequest.Elegant&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=DenisZhukovski_WebRequest.Elegant)
-</h3>
+</div>
 
 

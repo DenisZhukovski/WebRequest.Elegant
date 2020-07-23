@@ -36,7 +36,7 @@ steps:
     SonarCloud: 'Sonar Cloud'
     organization: 'deniszhukovski'
     scannerMode: 'MSBuild'
-    projectKey: 'WebRequest.Elegant'
+    projectKey: 'DenisZhukovski_WebRequest.Elegant'
     projectName: 'WebRequest.Elegant'
 - task: SonarCloudAnalyze@1
 - task: SonarCloudPublish@1

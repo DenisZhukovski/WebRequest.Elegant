@@ -1,6 +1,5 @@
 # WebRequest.Elegant
 <h3 align="center">
-  
   [![NuGet](https://img.shields.io/nuget/v/WebRequest.Elegant.svg)](https://www.nuget.org/packages/WebRequest.Elegant/) 
   [![Downloads](https://img.shields.io/nuget/dt/WebRequest.Elegant.svg)](https://www.nuget.org/WebRequest.Elegant/)
   [![Stars](https://img.shields.io/github/stars/DenisZhukovski/WebRequest.Elegant?color=brightgreen)](https://github.com/DenisZhukovski/WebRequest.Elegant/stargazers) 
@@ -39,10 +38,10 @@ public class Users
 ## Build status
 
 <div align="center">
-  [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=DenisZhukovski_WebRequest.Elegant&metric=alert_status)](https://sonarcloud.io/dashboard?id=DenisZhukovski_WebRequest.Elegant) 
-  [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=DenisZhukovski_WebRequest.Elegant&metric=coverage)](https://sonarcloud.io/dashboard?id=DenisZhukovski_WebRequest.Elegant)
-  [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=DenisZhukovski_WebRequest.Elegant&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=DenisZhukovski_WebRequest.Elegant)
-  [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=DenisZhukovski_WebRequest.Elegant&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=DenisZhukovski_WebRequest.Elegant) 
+   [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=DenisZhukovski_WebRequest.Elegant&metric=alert_status)](https://sonarcloud.io/dashboard?id=DenisZhukovski_WebRequest.Elegant) 
+   [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=DenisZhukovski_WebRequest.Elegant&metric=coverage)](https://sonarcloud.io/dashboard?id=DenisZhukovski_WebRequest.Elegant)
+   [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=DenisZhukovski_WebRequest.Elegant&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=DenisZhukovski_WebRequest.Elegant)
+   [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=DenisZhukovski_WebRequest.Elegant&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=DenisZhukovski_WebRequest.Elegant) 
 </div>
 
 

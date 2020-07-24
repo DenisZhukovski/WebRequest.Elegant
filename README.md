@@ -36,6 +36,8 @@ public class Users
 }
 ```
 
+The main goal for this approach is to become a staple component for the SDKs that are built like tree structure.
+
 ## Build status
 
 <div align="center">

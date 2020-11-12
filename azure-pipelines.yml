@@ -40,7 +40,7 @@ steps:
     configuration: '$(buildConfiguration)'
     testSelector: 'testAssemblies'
     testAssemblyVer2: | # Required when testSelector == TestAssemblies
-     **\*test*.dll
+     **\*Tests*.dll
      !**\*TestAdapter.dll
      !**\obj\** 
     searchFolder: '$(System.DefaultWorkingDirectory)'

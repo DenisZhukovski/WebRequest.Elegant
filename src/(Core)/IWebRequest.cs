@@ -25,7 +25,7 @@ namespace WebRequest.Elegant
         /// </summary>
         HttpMethod HttpMethod { get; }
 
-        IJsonObject Body { get; }
+        Dictionary<string, IJsonObject> Body { get; }
 
         /// <summary>
         /// Executes the web request.
@@ -57,8 +57,8 @@ namespace WebRequest.Elegant
         /// <summary>
         /// Creates a new web request with specified post body.
         /// </summary>
-        /// <param name="postBody">The post body as json object.</param>
+        /// <param name="postBodies">The list of post bodies arguments as json objects.</param>
         /// <returns>New web request that is configured with specified post body parameter.</returns>
-        IWebRequest WithBody(IJsonObject postBody);
+        IWebRequest WithBody(Dictionary<string, IJsonObject> postBodies);
     }
 }

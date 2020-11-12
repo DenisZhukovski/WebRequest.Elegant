@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -47,6 +48,24 @@ namespace WebRequest.Tests
             Assert.AreEqual(
                 new FileContent("./TestData/MultiArgumentsPostBody.txt").ToString().Replace("\r", string.Empty),
                 fakeRequestHandler.RequestsAsString[0].Replace("\r", string.Empty)
+            );
+        }
+
+        [Test]
+        public void WebRequestToString()
+        {
+            Assert.AreEqual(
+                $"Uri: http://reqres.in:80/api/users{Environment.NewLine}Token: {Environment.NewLine}Body: WebRequest.Elegant.MultiArgumentsBodyContent",
+                new Elegant.WebRequest(
+                    "http://reqres.in/api/users",
+                    new HttpClient()
+                )
+                .WithMethod(HttpMethod.Post)
+                .WithBody(new Dictionary<string, IJsonObject>
+                {
+                    { "TestArgument1", new SimpleString("Hello World") },
+                    { "TestArgument2", new TestJsonObject() },
+                }).ToString()
             );
         }
 

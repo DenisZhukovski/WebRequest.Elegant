@@ -59,7 +59,7 @@ Content-Disposition: form-data; name=TestArgument2
   ""LastName"": ""Test Last Name""
 }
 ------WebRequestBoundary--
-", fakeRequestHandler.RequestsAsString[0].Replace("\r", string.Empty));
+", fakeRequestHandler.RequestsAsString[0]);
         }
 
         public class TestJsonObject : IJsonObject

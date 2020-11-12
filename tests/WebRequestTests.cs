@@ -52,10 +52,37 @@ namespace WebRequest.Tests
         }
 
         [Test]
+        public async Task SingleJsonObjectInPostMethod()
+        {
+            var fakeRequestHandler = new FkHttpMessageHandler("Test message");
+            await new Elegant.WebRequest(
+                "http://reqres.in/api/users",
+                new HttpClient(fakeRequestHandler)
+            )
+            .WithMethod(HttpMethod.Post)
+            .WithBody(new TestJsonObject()).GetResponseAsync();
+
+            Assert.AreEqual(
+                @"Request: http://reqres.in/api/users
+PostBody: {
+  ""FirstName"": ""Test First Name"",
+  ""LastName"": ""Test Last Name""
+}".Replace("\r", string.Empty),
+                fakeRequestHandler.RequestsAsString[0].Replace("\r", string.Empty)
+            );
+        }
+
+        [Test]
         public void WebRequestToString()
         {
             Assert.AreEqual(
-                $"Uri: http://reqres.in:80/api/users\nToken: \nBody: WebRequest.Elegant.MultiArgumentsBodyContent",
+                @"Uri: http://reqres.in:80/api/users
+Token: 
+Body: TestArgument2: {
+  ""FirstName"": ""Test First Name"",
+  ""LastName"": ""Test Last Name""
+}
+",
                 new Elegant.WebRequest(
                     "http://reqres.in/api/users",
                     new HttpClient()

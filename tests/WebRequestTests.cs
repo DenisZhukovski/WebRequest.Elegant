@@ -55,7 +55,7 @@ namespace WebRequest.Tests
         public void WebRequestToString()
         {
             Assert.AreEqual(
-                $"Uri: http://reqres.in:80/api/users{Environment.NewLine}Token: {Environment.NewLine}Body: WebRequest.Elegant.MultiArgumentsBodyContent",
+                $"Uri: http://reqres.in:80/api/users\nToken: \nBody: WebRequest.Elegant.MultiArgumentsBodyContent",
                 new Elegant.WebRequest(
                     "http://reqres.in/api/users",
                     new HttpClient()

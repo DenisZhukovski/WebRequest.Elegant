@@ -92,7 +92,7 @@ Body: TestArgument2: {
                 {
                     { "TestArgument1", new SimpleString("Hello World") },
                     { "TestArgument2", new TestJsonObject() },
-                }).ToString()
+                }).ToString().Replace("\r", string.Empty)
             );
         }
 

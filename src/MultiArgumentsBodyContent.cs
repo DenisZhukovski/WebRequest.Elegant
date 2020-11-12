@@ -31,6 +31,11 @@ namespace WebRequest.Elegant
             }
         }
 
+        public override string ToString()
+        {
+            return _bodyContent.AsJson();
+        }
+
         private HttpContent ToContent(IJsonObject jsonObject)
         {
             return new StringContent(

@@ -82,7 +82,7 @@ Body: TestArgument2: {
   ""FirstName"": ""Test First Name"",
   ""LastName"": ""Test Last Name""
 }
-",
+".Replace("\r", string.Empty),
                 new Elegant.WebRequest(
                     "http://reqres.in/api/users",
                     new HttpClient()

@@ -44,22 +44,10 @@ namespace WebRequest.Tests
                 { "TestArgument2", new TestJsonObject() },
             }).GetResponseAsync();
 
-            Assert.AreEqual(@"Request: http://reqres.in/api/users
-PostBody: ------WebRequestBoundary
-Content-Type: application/json; charset=utf-8
-Content-Disposition: form-data; name=TestArgument1
-
-Hello World
-------WebRequestBoundary
-Content-Type: application/json; charset=utf-8
-Content-Disposition: form-data; name=TestArgument2
-
-{
-  ""FirstName"": ""Test First Name"",
-  ""LastName"": ""Test Last Name""
-}
-------WebRequestBoundary--
-", fakeRequestHandler.RequestsAsString[0]);
+            Assert.AreEqual(
+                new FileContent("./TestData/MultiArgumentsPostBody.txt").ToString().Replace("\r", string.Empty),
+                fakeRequestHandler.RequestsAsString[0].Replace("\r", string.Empty)
+            );
         }
 
         public class TestJsonObject : IJsonObject

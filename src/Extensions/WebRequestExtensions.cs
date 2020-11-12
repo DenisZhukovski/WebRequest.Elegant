@@ -21,7 +21,12 @@ namespace WebRequest.Elegant
 
         public static IWebRequest WithBody(this IWebRequest request, IJsonObject body)
         {
-            return request.WithBody(new Dictionary<string, IJsonObject>() { { string.Empty, body } });
+            return request.WithBody(new JsonBodyContent(body));
+        }
+
+        public static IWebRequest WithBody(this IWebRequest request, Dictionary<string, IJsonObject> body)
+        {
+            return request.WithBody(new MultiArgumentsBodyContent(body));
         }
 
         private static bool HasDoubleSlash(IWebRequest request, string url)

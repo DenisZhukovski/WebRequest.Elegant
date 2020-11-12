@@ -33,8 +33,9 @@ namespace WebRequest.Tests
         public async Task MultipleJsonObjectsInPostMethod()
         {
             var fakeRequestHandler = new FkHttpMessageHandler("Test message");
-            await new Elegant.WebRequest("http://10.0.1.1",
-                new HttpClient()
+            await new Elegant.WebRequest(
+                "http://reqres.in/api/users",
+                new HttpClient(fakeRequestHandler)
             )
             .WithMethod(HttpMethod.Post)
             .WithBody(new Dictionary<string, IJsonObject>
@@ -43,7 +44,22 @@ namespace WebRequest.Tests
                 { "TestArgument2", new TestJsonObject() },
             }).GetResponseAsync();
 
-            Assert.AreEqual("", fakeRequestHandler.RequestsAsString[0]);
+            Assert.AreEqual(@"Request: http://reqres.in/api/users
+PostBody: ------WebRequestBoundary
+Content-Type: application/json; charset=utf-8
+Content-Disposition: form-data; name=TestArgument1
+
+Hello World
+------WebRequestBoundary
+Content-Type: application/json; charset=utf-8
+Content-Disposition: form-data; name=TestArgument2
+
+{
+  ""FirstName"": ""Test First Name"",
+  ""LastName"": ""Test Last Name""
+}
+------WebRequestBoundary--
+", fakeRequestHandler.RequestsAsString[0].Replace("\r", string.Empty));
         }
 
         public class TestJsonObject : IJsonObject
@@ -54,20 +70,6 @@ namespace WebRequest.Tests
                     new JProperty("FirstName", "Test First Name"),
                     new JProperty("LastName", "Test Last Name")
                 ).ToString();
-            }
-        }
-
-        public class SimpleString : IJsonObject
-        {
-            private readonly string _value;
-
-            public SimpleString(string value)
-            {
-                _value = value;
-            }
-            public string ToJson()
-            {
-                return _value;
             }
         }
     }

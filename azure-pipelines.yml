@@ -34,9 +34,34 @@ steps:
     configuration: '$(buildConfiguration)'
 
 - task: VSTest@2
+  displayName: 'Run unit tests'
   inputs:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
+    testSelector: 'testAssemblies'
+    testAssemblyVer2: | # Required when testSelector == TestAssemblies
+     **\*Tests*.dll
+     !**\*TestAdapter.dll
+     !**\obj\** 
+    searchFolder: '$(System.DefaultWorkingDirectory)'
+    codeCoverageEnabled: true
+
+- task: PublishTestResults@2
+  displayName: 'Publish Test Results **/*.trx'
+  inputs:
+    testResultsFormat: VSTest
+    testResultsFiles: '**/*.trx'
+    searchFolder: '$(Build.SourcesDirectory)'
+    failTaskOnFailedTests: true
+    testRunTitle: 'Unit tests'
+
+- task: PublishCodeCoverageResults@1
+  displayName: 'Publish code coverage result'
+  inputs:
+    codeCoverageTool: Cobertura
+    summaryFileLocation: '**/*.cobertura.xml'
+    reportDirectory: '$(Build.SourcesDirectory)/CodeCoverageResults'
+
 - task: SonarCloudAnalyze@1
 - task: SonarCloudPublish@1
   inputs:

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace WebRequest.Elegant
 {
@@ -16,6 +17,16 @@ namespace WebRequest.Elegant
                 url = url.TrimStart('/');
             }
             return request.WithPath(new Uri(request.Uri.AbsoluteUri + url));
+        }
+
+        public static IWebRequest WithBody(this IWebRequest request, IJsonObject body)
+        {
+            return request.WithBody(new JsonBodyContent(body));
+        }
+
+        public static IWebRequest WithBody(this IWebRequest request, Dictionary<string, IJsonObject> body)
+        {
+            return request.WithBody(new MultiArgumentsBodyContent(body));
         }
 
         private static bool HasDoubleSlash(IWebRequest request, string url)

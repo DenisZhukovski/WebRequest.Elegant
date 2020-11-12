@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
+using WebRequest.Elegant.Core;
 
 namespace WebRequest.Elegant
 {
@@ -33,7 +33,7 @@ namespace WebRequest.Elegant
                 token,
                 uri,
                 HttpMethod.Get,
-                new EmptyJsonObject(),
+                new JsonBodyContent(new EmptyJsonObject()),
                 new Dictionary<string, string>(),
                 httpClient
             )
@@ -44,7 +44,7 @@ namespace WebRequest.Elegant
             IToken token,
             Uri uri,
             HttpMethod method,
-            IJsonObject body,
+            IBodyContent body,
             Dictionary<string, string> queryParams,
             HttpClient httpClient)
         {
@@ -62,7 +62,7 @@ namespace WebRequest.Elegant
 
         public HttpMethod HttpMethod { get; }
 
-        public IJsonObject Body { get; }
+        public IBodyContent Body { get; }
 
         public async Task<HttpResponseMessage> GetResponseAsync()
         {
@@ -113,14 +113,14 @@ namespace WebRequest.Elegant
             );
         }
 
-        public IWebRequest WithBody(IJsonObject body)
+        public IWebRequest WithBody(IBodyContent body)
         {
             return new WebRequest(
-                Token, 
-                Uri, 
-                HttpMethod, 
-                body, 
-                _queryParams, 
+                Token,
+                Uri,
+                HttpMethod,
+                body,
+                _queryParams,
                 _httpClient
             );
         }
@@ -129,7 +129,7 @@ namespace WebRequest.Elegant
         {
             return $"Uri: {new QueryParamsAsString(_queryParams).With(Uri)}\n" +
                    $"Token: {Token}\n" +
-                   $"Body: {Body.ToJson()}";
+                   $"Body: {Body}";
         }
 
         private HttpRequestMessage RequestMessage(HttpMethod method)
@@ -138,11 +138,7 @@ namespace WebRequest.Elegant
                 method,
                 new QueryParamsAsString(_queryParams).With(Uri)
             );
-            var bodyJsonString = Body.ToJson();
-            if (!string.IsNullOrEmpty(bodyJsonString))
-            {
-                request.Content = new StringContent(bodyJsonString, Encoding.UTF8, "application/json");
-            }
+            Body.InjectTo(request);
             Token.InjectTo(request);
             return request;
         }

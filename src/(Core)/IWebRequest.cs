@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using WebRequest.Elegant.Core;
 
 namespace WebRequest.Elegant
 {
@@ -25,7 +26,7 @@ namespace WebRequest.Elegant
         /// </summary>
         HttpMethod HttpMethod { get; }
 
-        IJsonObject Body { get; }
+        IBodyContent Body { get; }
 
         /// <summary>
         /// Executes the web request.
@@ -57,8 +58,8 @@ namespace WebRequest.Elegant
         /// <summary>
         /// Creates a new web request with specified post body.
         /// </summary>
-        /// <param name="postBody">The post body as json object.</param>
+        /// <param name="postBody">The body content that will be sent to the server as POST body.</param>
         /// <returns>New web request that is configured with specified post body parameter.</returns>
-        IWebRequest WithBody(IJsonObject postBody);
+        IWebRequest WithBody(IBodyContent body);
     }
 }

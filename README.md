@@ -48,4 +48,28 @@ The main goal for this approach is to become a staple component for the SDKs tha
    [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=DenisZhukovski_WebRequest.Elegant&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=DenisZhukovski_WebRequest.Elegant) 
 </div>
 
+## Useful extension
+This enxention method is useful when you need to deserialize the response into an object. I didn't add it into the original package because JsonConvert class is used but it's been decided not to pin on any 3rd party libraries.
+
+```cs
+public static class WebRequestExtensions
+{
+   public static async Task<T> ReadAsync<T>(this IWebRequest request)
+   {
+      var response = await request
+         .GetResponseAsync()
+         .ConfigureAwait(false);
+      response.EnsureSuccessStatusCode();
+      var content = await response.Content
+         .ReadAsStringAsync()
+         .ConfigureAwait(false);
+      if (typeof(T) == typeof(string))
+      {
+         return (T)(object)content;
+      }
+
+      return JsonConvert.DeserializeObject<T>(content);
+   }
+}
+```
 

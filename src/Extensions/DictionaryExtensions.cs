@@ -10,7 +10,7 @@ namespace WebRequest.Elegant
             var count = 0;
             foreach(var key in dictionary.Keys)
             {
-                results[count] = $"{key}: {dictionary[key].ToJson()}";
+                results[count++] = $"{key}: {dictionary[key].ToJson()}";
             }
             return string.Join("\n", results);
         }

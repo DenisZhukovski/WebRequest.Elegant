@@ -75,16 +75,6 @@ PostBody: {
         [Test]
         public void WebRequestToString()
         {
-            var aa = new Elegant.WebRequest(
-                    "http://reqres.in/api/users",
-                    new HttpClient()
-                )
-                .WithMethod(HttpMethod.Post)
-                .WithBody(new Dictionary<string, IJsonObject>
-                {
-                    { "TestArgument1", new SimpleString("Hello World") },
-                    { "TestArgument2", new TestJsonObject() },
-                }).ToString();
             Assert.AreEqual(
                 @"Uri: http://reqres.in:80/api/users
 Token: 

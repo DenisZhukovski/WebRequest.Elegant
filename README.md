@@ -38,6 +38,31 @@ public class Users
 
 The main goal for this approach is to become a staple component for the SDKs that are built like tree structure.
 
+## Useful extension
+This enxention method is useful when you need to deserialize the response into an object. I didn't add it into the original package because JsonConvert class is used but it's been decided not to pin on any 3rd party libraries.
+
+```cs
+public static class WebRequestExtensions
+{
+   public static async Task<T> ReadAsync<T>(this IWebRequest request)
+   {
+      var response = await request
+         .GetResponseAsync()
+         .ConfigureAwait(false);
+      response.EnsureSuccessStatusCode();
+      var content = await response.Content
+         .ReadAsStringAsync()
+         .ConfigureAwait(false);
+      if (typeof(T) == typeof(string))
+      {
+         return (T)(object)content;
+      }
+
+      return JsonConvert.DeserializeObject<T>(content);
+   }
+}
+```
+
 ## Build status
 
 <div align="center">

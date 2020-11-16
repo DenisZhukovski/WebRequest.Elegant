@@ -78,11 +78,11 @@ PostBody: {
             Assert.AreEqual(
                 @"Uri: http://reqres.in:80/api/users
 Token: 
-Body: TestArgument2: {
+Body: TestArgument1: Hello World
+TestArgument2: {
   ""FirstName"": ""Test First Name"",
   ""LastName"": ""Test Last Name""
-}
-".Replace("\r", string.Empty),
+}".Replace("\r", string.Empty),
                 new Elegant.WebRequest(
                     "http://reqres.in/api/users",
                     new HttpClient()

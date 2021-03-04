@@ -1,20 +1,15 @@
 ﻿using System.IO;
 using System.Net.Http;
-using System.Net.Http.Headers;
 
 namespace WebRequest.Elegant.Extensions
 {
     public static class StreamExtensions
     {
-        public static StreamContent ToStreamContent(this Stream fileStream, string fileName)
+        public static HttpContent ToStreamContent(this Stream fileStream, string fileName)
         {
-            var content = new StreamContent(fileStream);
-            content.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
-            {
-                Name = "fileToUpload",
-                FileName = fileName
-            };
-            return content;
+            var requestContent = new MultipartFormDataContent();
+            requestContent.Add(new StreamContent(fileStream), "application/octet-stream", fileName);
+            return requestContent;
         }
     }
 }

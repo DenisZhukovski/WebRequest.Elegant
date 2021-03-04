@@ -47,7 +47,7 @@ namespace WebRequest.Tests
 
             Assert.AreEqual(
                 new FileContent("./TestData/TestUploadFile.txt").ToString().Replace("\r", string.Empty),
-                fakeRequestHandler.RequestsAsString[0].Replace("\r", string.Empty).Split("PostBody: ")[1]
+                fakeRequestHandler.RequestsAsString[0].Replace("\r", string.Empty).Split("\n")[4].Remove(0, 1)
             );
         }
 

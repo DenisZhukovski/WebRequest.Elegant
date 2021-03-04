@@ -4,12 +4,12 @@
     <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
     <Authors>Denis Zhukovski</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Version>1.0.10</Version>
+    <Version>1.0.11</Version>
     <Title>Web Request Elegenat</Title>
     <Description>This is wrapper on HttpClient that brings interface implementation and encapsulates the original HttpClient.</Description>
     <PackageProjectUrl>https://github.com/DenisZhukovski/WebRequest.Elegant</PackageProjectUrl>
     <RepositoryUrl>https://github.com/DenisZhukovski/WebRequest.Elegant</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageVersion>1.0.10</PackageVersion>
+    <PackageVersion>1.0.11</PackageVersion>
   </PropertyGroup>
 </Project>

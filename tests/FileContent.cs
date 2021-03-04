@@ -13,4 +13,12 @@ public class FileContent
     {
         return File.ReadAllText(_pathToContent);
     }
+
+    public FileInfo Info
+    {
+        get
+        {
+            return new FileInfo(_pathToContent);
+        }
+    }
 }

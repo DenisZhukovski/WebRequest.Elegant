@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -15,20 +14,6 @@ namespace WebRequest.Tests
         public void Setup()
         {
         }
-
-        //[Test]
-        //public void WebRequestCachingLogic()
-        //{
-        //    var request = new Elegant.WebRequest(
-        //        "https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js",
-        //        new System.Net.Http.HttpClient(
-        //            new SocketsHttpHandler()
-        //            {
-        //                CachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.CacheIfAvailable)
-        //            }
-        //        )
-        //    );
-        //}
 
         [Test]
         public async Task MultipleJsonObjectsInPostMethod()
@@ -48,6 +33,21 @@ namespace WebRequest.Tests
             Assert.AreEqual(
                 new FileContent("./TestData/MultiArgumentsPostBody.txt").ToString().Replace("\r", string.Empty),
                 fakeRequestHandler.RequestsAsString[0].Replace("\r", string.Empty)
+            );
+        }
+
+        [Test]
+        public async Task UploadFile()
+        {
+            var fakeRequestHandler = new FkHttpMessageHandler("Test message");
+            await new Elegant.WebRequest(
+                "http://reqres.in/api/users",
+                new HttpClient(fakeRequestHandler)
+            ).UploadFileAsync("./TestData/TestUploadFile.txt");
+
+            Assert.AreEqual(
+                new FileContent("./TestData/TestUploadFile.txt").ToString().Replace("\r", string.Empty),
+                fakeRequestHandler.RequestsAsString[0].Replace("\r", string.Empty).Split("PostBody: ")[1]
             );
         }
 

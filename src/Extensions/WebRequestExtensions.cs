@@ -1,5 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Net.Http;
+using System.Threading.Tasks;
+using WebRequest.Elegant.Extensions;
 
 namespace WebRequest.Elegant
 {
@@ -29,10 +33,29 @@ namespace WebRequest.Elegant
             return request.WithBody(new MultiArgumentsBodyContent(body));
         }
 
+        public static IWebRequest WithBody(this IWebRequest request, HttpContent content)
+        {
+            return request.WithBody(new HttpBodyContent(content));
+        }
+
         private static bool HasDoubleSlash(IWebRequest request, string url)
         {
             return request.Uri.AbsoluteUri[request.Uri.AbsoluteUri.Length - 1] == '/'
                 && url[0] == '/';
+        }
+
+        public static Task<HttpResponseMessage> UploadFileAsync(this IWebRequest webRequest, Stream fileStream, string fileName)
+        {
+            return webRequest
+                .WithMethod(HttpMethod.Post)
+                .WithBody(fileStream.ToStreamContent(fileName))
+                .GetResponseAsync();
+        }
+
+        public static Task<HttpResponseMessage> UploadFileAsync(this IWebRequest webRequest, string filePath)
+        {
+            var fileStream = new FileStream(filePath, FileMode.Open);
+            return webRequest.UploadFileAsync(fileStream, fileStream.Name);
         }
     }
 }

@@ -36,10 +36,10 @@ public class Users
 }
 ```
 
-The main goal for this approach is to become a staple component for the SDKs that are built like tree structure.
+The main goal ща this approach is to become a staple component for the SDKs that are built like tree structure.
 
 ## Useful extension
-This enxention method is useful when you need to deserialize the response into an object. I didn't add it into the original package because JsonConvert class is used but it's been decided not to pin on any 3rd party libraries.
+This enxention method is useful when its needed to deserialize the response into an object. It was not added into the original package because JsonConvert class creates dependency in 3rd party component but it's been decided not to pin on any 3rd party libraries.
 
 ```cs
 public static class WebRequestExtensions

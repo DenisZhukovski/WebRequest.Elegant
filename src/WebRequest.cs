@@ -12,6 +12,12 @@ namespace WebRequest.Elegant
         private readonly HttpClient _httpClient;
 
         public WebRequest(
+            string uriString
+        ) : this(uriString, new HttpClient())
+        {
+        }
+
+        public WebRequest(
             string uriString,
             HttpClient httpClient
         ) : this(new Uri(uriString), httpClient)

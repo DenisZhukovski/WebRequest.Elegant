@@ -57,5 +57,13 @@ namespace WebRequest.Elegant
             var fileStream = new FileStream(filePath, FileMode.Open);
             return webRequest.UploadFileAsync(fileStream, fileStream.Name);
         }
+
+        public static async Task EnsureSuccessAsync(this IWebRequest request)
+        {
+            var response = await request
+                .GetResponseAsync()
+                .ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+        }
     }
 }

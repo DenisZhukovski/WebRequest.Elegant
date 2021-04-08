@@ -21,7 +21,7 @@ namespace WebRequest.Tests
             var fakeRequestHandler = new FkHttpMessageHandler("Test message");
             await new Elegant.WebRequest(
                 "http://reqres.in/api/users",
-                new HttpClient(fakeRequestHandler)
+                fakeRequestHandler
             )
             .WithMethod(HttpMethod.Post)
             .WithBody(new Dictionary<string, IJsonObject>
@@ -42,7 +42,7 @@ namespace WebRequest.Tests
             var fakeRequestHandler = new FkHttpMessageHandler("Test message");
             await new Elegant.WebRequest(
                 "http://reqres.in/api/users",
-                new HttpClient(fakeRequestHandler)
+                fakeRequestHandler
             ).UploadFileAsync("./TestData/TestUploadFile.txt");
 
             Assert.AreEqual(
@@ -57,10 +57,11 @@ namespace WebRequest.Tests
             var fakeRequestHandler = new FkHttpMessageHandler("Test message");
             await new Elegant.WebRequest(
                 "http://reqres.in/api/users",
-                new HttpClient(fakeRequestHandler)
+                fakeRequestHandler
             )
             .WithMethod(HttpMethod.Post)
-            .WithBody(new TestJsonObject()).GetResponseAsync();
+            .WithBody(new TestJsonObject())
+            .EnsureSuccessAsync();
 
             Assert.AreEqual(
                 @"Request: http://reqres.in/api/users
@@ -83,16 +84,13 @@ TestArgument2: {
   ""FirstName"": ""Test First Name"",
   ""LastName"": ""Test Last Name""
 }".Replace("\r", string.Empty),
-                new Elegant.WebRequest(
-                    "http://reqres.in/api/users",
-                    new HttpClient()
-                )
-                .WithMethod(HttpMethod.Post)
-                .WithBody(new Dictionary<string, IJsonObject>
-                {
-                    { "TestArgument1", new SimpleString("Hello World") },
-                    { "TestArgument2", new TestJsonObject() },
-                }).ToString().Replace("\r", string.Empty)
+                new Elegant.WebRequest("http://reqres.in/api/users")
+                    .WithMethod(HttpMethod.Post)
+                    .WithBody(new Dictionary<string, IJsonObject>
+                    {
+                        { "TestArgument1", new SimpleString("Hello World") },
+                        { "TestArgument2", new TestJsonObject() },
+                    }).ToString().Replace("\r", string.Empty)
             );
         }
 

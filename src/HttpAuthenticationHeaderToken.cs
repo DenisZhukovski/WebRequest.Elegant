@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading.Tasks;
 
 namespace WebRequest.Elegant
 {
@@ -32,22 +33,24 @@ namespace WebRequest.Elegant
         /// Prolongates the token.
         /// </summary>
         /// <param name="httpResponseMessage">The http response message that contain new token.</param>
-        public void ProlongateFrom(HttpResponseMessage httpResponseMessage)
+        public Task ProlongateFromAsync(HttpResponseMessage httpResponseMessage)
         {
             // TODO: Extract token from HttpResponseMessage
             _token = "";
+            return Task.CompletedTask;
         }
 
         /// <summary>
         /// Inject token into http request.
         /// </summary>
         /// <param name="request">The http request message.</param>
-        public void InjectTo(HttpRequestMessage request)
+        public Task InjectToAsync(HttpRequestMessage request)
         {
             if (!string.IsNullOrEmpty(_token))
             {
                 request.Headers.Authorization = new AuthenticationHeaderValue(_token);
             }
+            return Task.CompletedTask;
         }
 
         /// <summary>

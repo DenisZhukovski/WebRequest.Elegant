@@ -1,4 +1,5 @@
 ﻿using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace WebRequest.Elegant
 {
@@ -8,12 +9,12 @@ namespace WebRequest.Elegant
         /// Prolongates the token.
         /// </summary>
         /// <param name="httpResponseMessage">The http response message that contain new token.</param>
-        void ProlongateFrom(HttpResponseMessage httpResponseMessage);
+        Task ProlongateFromAsync(HttpResponseMessage httpResponseMessage);
 
         /// <summary>
         /// Inject token into http request.
         /// </summary>
         /// <param name="request">The http request message.</param>
-        void InjectTo(HttpRequestMessage request);
+        Task InjectToAsync(HttpRequestMessage request);
     }
 }

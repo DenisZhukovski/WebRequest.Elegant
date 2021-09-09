@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using WebRequest.Elegant;
+using WebRequest.Elegant.Core;
 using WebRequest.Elegant.Fakes;
 
 namespace WebRequest.Tests
@@ -91,6 +93,22 @@ TestArgument2: {
                         { "TestArgument1", new SimpleString("Hello World") },
                         { "TestArgument2", new TestJsonObject() },
                     }).ToString().Replace("\r", string.Empty)
+            );
+        }
+
+        [Test]
+        public void WebRequestWithTokenToString()
+        {
+            Assert.AreEqual(
+                @"Uri: http://reqres.in:80/api/users
+Token: erYTo
+Body: test string".Replace("\r", string.Empty),
+                new Elegant.WebRequest(
+                    new Uri("http://reqres.in/api/users"),
+                    new HttpAuthenticationHeaderToken("erYTo"),
+                    HttpMethod.Post,
+                    new JsonBodyContent(new SimpleString("test string"))
+                ).ToString().Replace("\r", string.Empty)
             );
         }
 

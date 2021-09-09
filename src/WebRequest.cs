@@ -54,6 +54,22 @@ namespace WebRequest.Elegant
         }
 
         public WebRequest(
+            Uri uri,
+            IToken token,
+            HttpMethod method,
+            IBodyContent body
+        ) : this(
+                token,
+                uri,
+                method,
+                body,
+                new Dictionary<string, string>(),
+                new HttpClient()
+            )
+        {
+        }
+
+        public WebRequest(
             IToken token,
             Uri uri,
             HttpMethod method,
@@ -79,10 +95,10 @@ namespace WebRequest.Elegant
 
         public async Task<HttpResponseMessage> GetResponseAsync()
         {
-            var requestMessage = RequestMessage(HttpMethod);
+            var requestMessage = await RequestMessageAsync(HttpMethod).ConfigureAwait(false);
             try
             {
-                return await _httpClient.SendAsync(requestMessage);
+                return await _httpClient.SendAsync(requestMessage).ConfigureAwait(false);
             }
             finally
             {
@@ -145,14 +161,14 @@ namespace WebRequest.Elegant
                    $"Body: {Body}";
         }
 
-        private HttpRequestMessage RequestMessage(HttpMethod method)
+        private async Task<HttpRequestMessage> RequestMessageAsync(HttpMethod method)
         {
             var request = new HttpRequestMessage(
                 method,
                 new QueryParamsAsString(_queryParams).With(Uri)
             );
             Body.InjectTo(request);
-            Token.InjectTo(request);
+            await Token.InjectToAsync(request).ConfigureAwait(false);
             return request;
         }
     }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -86,6 +87,18 @@ namespace WebRequest.Elegant
         public int GetHashCode(HttpAuthenticationHeaderToken obj)
         {
             return obj._token.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is HttpAuthenticationHeaderToken token ?
+                Equals(this, token) :
+                false;
+        }
+
+        public override int GetHashCode()
+        {
+            return GetHashCode(this);
         }
     }
 }

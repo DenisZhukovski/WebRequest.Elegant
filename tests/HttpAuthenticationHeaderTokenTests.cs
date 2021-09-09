@@ -19,20 +19,25 @@ namespace WebRequest.Tests
         }
 
         [Test]
+        public async Task ProlongateFrom()
+        {
+            var token = new HttpAuthenticationHeaderToken("123");
+            var httpRequestMessage = new System.Net.Http.HttpRequestMessage();
+
+            await token.ProlongateFromAsync(new System.Net.Http.HttpResponseMessage()).ConfigureAwait(false);
+            await token.InjectToAsync(httpRequestMessage).ConfigureAwait(false);
+
+            Assert.IsNull(
+                httpRequestMessage.Headers.Authorization
+            );
+        }
+
+        [Test]
         public async Task TheSameTokensIsEqual()
         {
             Assert.AreEqual(
                 new HttpAuthenticationHeaderToken("eyJ0e"),
                 new HttpAuthenticationHeaderToken("eyJ0e")
-            );
-        }
-
-        [Test]
-        public async Task IsEqual()
-        {
-            Assert.AreEqual(
-                "eyJ0e",
-                "eyJ0e"
             );
         }
 

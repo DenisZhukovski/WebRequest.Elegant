@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using WebRequest.Elegant;
-using WebRequest.Elegant.Core;
 using WebRequest.Elegant.Fakes;
 
 namespace WebRequest.Tests

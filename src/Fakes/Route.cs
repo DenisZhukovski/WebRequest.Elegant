@@ -42,6 +42,14 @@ namespace WebRequest.Elegant.Fakes
             return _responses[uri];
         }
 
+        private static HttpResponseMessage ToResponseMessage(string data)
+        {
+            return new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(data),
+            };
+        }
+
         private static Dictionary<Uri, HttpResponseMessage> ToDictionary(Dictionary<string, string> responses)
         {
             var messagesResponses = new Dictionary<Uri, HttpResponseMessage>();
@@ -50,14 +58,6 @@ namespace WebRequest.Elegant.Fakes
                 messagesResponses.Add(new Uri(key), ToResponseMessage(responses[key]));
             }
             return messagesResponses;
-        }
-
-        private static HttpResponseMessage ToResponseMessage(string data)
-        {
-            return new HttpResponseMessage(HttpStatusCode.OK)
-            {
-                Content = new StringContent(data),
-            };
         }
 
         private static Dictionary<Uri, HttpResponseMessage> ToDictionary(Dictionary<string, HttpResponseMessage> responses)

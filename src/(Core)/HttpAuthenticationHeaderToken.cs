@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -82,8 +81,7 @@ namespace WebRequest.Elegant
         public override bool Equals(object obj)
         {
             return obj is HttpAuthenticationHeaderToken token
-                ? Equals(this, token)
-                : false;
+                && Equals(this, token);
         }
 
         /// <summary>

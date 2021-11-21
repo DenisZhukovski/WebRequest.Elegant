@@ -46,13 +46,10 @@ public static class WebRequestExtensions
 {
    public static async Task<T> ReadAsync<T>(this IWebRequest request)
    {
-      var response = await request
-         .GetResponseAsync()
-         .ConfigureAwait(false);
-      response.EnsureSuccessStatusCode();
-      var content = await response.Content
+      var content = await request
          .ReadAsStringAsync()
          .ConfigureAwait(false);
+         
       if (typeof(T) == typeof(string))
       {
          return (T)(object)content;

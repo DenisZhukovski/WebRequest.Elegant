@@ -142,6 +142,17 @@ namespace WebRequest.Tests
             );
         }
 
+        [Test]
+        public async Task WebRequestReceivesThroughtTheProxyHandler()
+        {
+            Assert.IsNotEmpty(
+                await new Elegant.WebRequest(
+                    new Uri("https://www.google.com/"),
+                    new ProxyHttpMessageHandler()
+                ).ReadAsStringAsync()
+            );
+        }
+
         public class TestJsonObject : IJsonObject
         {
             public string ToJson()

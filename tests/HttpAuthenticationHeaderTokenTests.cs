@@ -33,7 +33,7 @@ namespace WebRequest.Tests
         }
 
         [Test]
-        public async Task TheSameTokensIsEqual()
+        public void TheSameTokensIsEqual()
         {
             Assert.AreEqual(
                 new HttpAuthenticationHeaderToken("eyJ0e"),
@@ -42,7 +42,7 @@ namespace WebRequest.Tests
         }
 
         [Test]
-        public async Task DifferentTokensIsNotEqual()
+        public void DifferentTokensIsNotEqual()
         {
             Assert.AreNotEqual(
                 new HttpAuthenticationHeaderToken("123"),
@@ -51,7 +51,7 @@ namespace WebRequest.Tests
         }
 
         [Test]
-        public async Task NullIsNotEqualToken()
+        public void NullIsNotEqualToken()
         {
             Assert.AreNotEqual(
                 new HttpAuthenticationHeaderToken("eyJ0e"),
@@ -60,7 +60,7 @@ namespace WebRequest.Tests
         }
 
         [Test]
-        public async Task TheSameTokensHasSameHashcodes()
+        public void TheSameTokensHasSameHashcodes()
         {
             Assert.AreEqual(
                 new HttpAuthenticationHeaderToken("eyJ0e").GetHashCode(),

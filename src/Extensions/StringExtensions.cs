@@ -14,7 +14,8 @@
                 .Replace("\\n", string.Empty)
                 .Replace("\\t", string.Empty)
                 .Replace("\t", string.Empty)
-                .Replace("  ", string.Empty); // in some editor tabs replaced with spaces
+                .Replace("\n", string.Empty)
+                .Replace("  ", string.Empty); // in some editors tabs can be replaced with spaces
         }
     }
 }

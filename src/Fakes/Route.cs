@@ -10,6 +10,11 @@ namespace WebRequest.Elegant.Fakes
     {
         private readonly Dictionary<Uri, HttpResponseMessage> _responses;
 
+        public Route()
+            : this(new Dictionary<Uri, HttpResponseMessage>())
+        {
+        }
+
         public Route(Dictionary<string, string> responses)
             : this(ToDictionary(responses))
         {

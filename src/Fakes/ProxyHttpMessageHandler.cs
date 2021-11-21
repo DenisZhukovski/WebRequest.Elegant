@@ -8,8 +8,18 @@ namespace WebRequest.Elegant.Fakes
     /// <summary>
     /// The purpose is to assist during the unit testing.
     /// </summary>
-    public class ProxyHttpMessageHandler : HttpClientHandler
+    public class ProxyHttpMessageHandler : DelegatingHandler
     {
+        public ProxyHttpMessageHandler()
+            : this(new HttpClientHandler())
+        {
+        }
+
+        public ProxyHttpMessageHandler(HttpMessageHandler messageHandler)
+        {
+            InnerHandler = messageHandler;
+        }
+
         /// <summary>
         /// Gets as a <see cref="HttpRequestMessage"/> the requests that have been sent during the collaboration.
         /// </summary>

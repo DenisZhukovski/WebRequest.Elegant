@@ -111,6 +111,23 @@ Body: test string".Replace("\r", string.Empty),
             );
         }
 
+        [Test]
+        public async Task WebRequestReceivesDataFromRouteHandler()
+        {
+            Assert.AreEqual(
+                "Hello world",
+                await new Elegant.WebRequest(
+                    new Uri("http://reqres.in/api/users"),
+                    new RoutedHttpMessageHandler(
+                        new Route(new Dictionary<string, string>
+                        {
+                            { "http://reqres.in/api/users","Hello world" }
+                        })
+                    )
+                ).ReadAsStringAsync()
+            );
+        }
+
         public class TestJsonObject : IJsonObject
         {
             public string ToJson()

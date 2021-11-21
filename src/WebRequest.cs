@@ -27,7 +27,14 @@ namespace WebRequest.Elegant
         public WebRequest(
             string uriString,
             HttpMessageHandler messageHandler
-        ) : this(uriString, new HttpClient(messageHandler))
+        ) : this(new Uri(uriString), messageHandler)
+        {
+        }
+
+        public WebRequest(
+            Uri uri,
+            HttpMessageHandler messageHandler
+        ) : this(uri, new HttpClient(messageHandler))
         {
         }
 

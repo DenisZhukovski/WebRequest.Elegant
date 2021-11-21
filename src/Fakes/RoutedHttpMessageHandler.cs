@@ -6,8 +6,10 @@ namespace WebRequest.Elegant.Fakes
 {
     /// <summary>
     /// The purpose is to assist during the unit testing.
+    /// The message handler can respond with different messages based on configured routes.
+    /// If configured route can not find a match for the request then it delegates handling to base class.
     /// </summary>
-    public class RoutedHttpMessageHandler : HttpMessageHandler
+    public class RoutedHttpMessageHandler : HttpClientHandler
     {
         private readonly IRoute _requestRoute;
 
@@ -21,7 +23,7 @@ namespace WebRequest.Elegant.Fakes
         }
 
         /// <summary>
-        /// Simulates sending to the server responding with prepared http messages.
+        /// Simulates sending requests to the server responding with prepared http messages base on configured routes.
         /// </summary>
         /// <param name="request">The request that has to be sent.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
@@ -30,7 +32,11 @@ namespace WebRequest.Elegant.Fakes
             HttpRequestMessage request,
             CancellationToken cancellationToken)
         {
-            return Task.FromResult(_requestRoute.Response(request.RequestUri));
+            if (_requestRoute.Matches(request.RequestUri))
+            {
+                return Task.FromResult(_requestRoute.Response(request.RequestUri));
+            }
+            return base.SendAsync(request, cancellationToken);
         }
     }
 }

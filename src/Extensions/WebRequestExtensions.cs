@@ -60,6 +60,17 @@ namespace WebRequest.Elegant
             response.EnsureSuccessStatusCode();
         }
 
+        public static async Task<string> ReadAsStringAsync(this IWebRequest request)
+        {
+            var response = await request
+               .GetResponseAsync()
+               .ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+            return await response.Content
+               .ReadAsStringAsync()
+               .ConfigureAwait(false);
+        }
+
         private static bool HasDoubleSlash(IWebRequest request, string url)
         {
             return request.Uri.AbsoluteUri[request.Uri.AbsoluteUri.Length - 1] == '/'

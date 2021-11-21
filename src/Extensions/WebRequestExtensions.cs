@@ -38,12 +38,6 @@ namespace WebRequest.Elegant
             return request.WithBody(new HttpBodyContent(content));
         }
 
-        private static bool HasDoubleSlash(IWebRequest request, string url)
-        {
-            return request.Uri.AbsoluteUri[request.Uri.AbsoluteUri.Length - 1] == '/'
-                && url[0] == '/';
-        }
-
         public static Task<HttpResponseMessage> UploadFileAsync(this IWebRequest webRequest, Stream fileStream, string fileName)
         {
             return webRequest
@@ -64,6 +58,23 @@ namespace WebRequest.Elegant
                 .GetResponseAsync()
                 .ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
+        }
+
+        public static async Task<string> ReadAsStringAsync(this IWebRequest request)
+        {
+            var response = await request
+               .GetResponseAsync()
+               .ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+            return await response.Content
+               .ReadAsStringAsync()
+               .ConfigureAwait(false);
+        }
+
+        private static bool HasDoubleSlash(IWebRequest request, string url)
+        {
+            return request.Uri.AbsoluteUri[request.Uri.AbsoluteUri.Length - 1] == '/'
+                && url[0] == '/';
         }
     }
 }

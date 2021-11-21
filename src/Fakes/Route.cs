@@ -1,0 +1,78 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Net;
+using System.Net.Http;
+
+namespace WebRequest.Elegant.Fakes
+{
+    public class Route : IRoute
+    {
+        private readonly Dictionary<Uri, HttpResponseMessage> _responses;
+
+        public Route()
+            : this(new Dictionary<Uri, HttpResponseMessage>())
+        {
+        }
+
+        public Route(Dictionary<string, string> responses)
+            : this(ToDictionary(responses))
+        {
+        }
+
+        public Route(Dictionary<string, HttpResponseMessage> responses)
+            : this(ToDictionary(responses))
+        {
+        }
+
+        public Route(Dictionary<Uri, HttpResponseMessage> responses)
+        {
+            _responses = responses;
+        }
+
+        public Route With(Uri uri, string filePath)
+        {
+            var newRoutes = new Dictionary<Uri, HttpResponseMessage>(_responses);
+            newRoutes.Add(uri, ToResponseMessage(File.ReadAllText(filePath)));
+            return new Route(newRoutes);
+        }
+
+        public bool Matches(Uri uri)
+        {
+            return _responses.ContainsKey(uri);
+        }
+
+        public HttpResponseMessage Response(Uri uri)
+        {
+            return _responses[uri];
+        }
+
+        private static HttpResponseMessage ToResponseMessage(string data)
+        {
+            return new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(data),
+            };
+        }
+
+        private static Dictionary<Uri, HttpResponseMessage> ToDictionary(Dictionary<string, string> responses)
+        {
+            var messagesResponses = new Dictionary<Uri, HttpResponseMessage>();
+            foreach (var key in responses.Keys)
+            {
+                messagesResponses.Add(new Uri(key), ToResponseMessage(responses[key]));
+            }
+            return messagesResponses;
+        }
+
+        private static Dictionary<Uri, HttpResponseMessage> ToDictionary(Dictionary<string, HttpResponseMessage> responses)
+        {
+            var uriResponses = new Dictionary<Uri, HttpResponseMessage>();
+            foreach (var key in responses.Keys)
+            {
+                uriResponses.Add(new Uri(key), responses[key]);
+            }
+            return uriResponses;
+        }
+    }
+}

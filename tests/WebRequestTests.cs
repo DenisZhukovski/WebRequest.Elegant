@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using WebRequest.Elegant;
-using WebRequest.Elegant.Core;
 using WebRequest.Elegant.Fakes;
+using WebRequest.Elegant.Extensions;
 
 namespace WebRequest.Tests
 {
@@ -67,11 +67,11 @@ namespace WebRequest.Tests
 
             Assert.AreEqual(
                 @"Request: http://reqres.in/api/users
-PostBody: {
-  ""FirstName"": ""Test First Name"",
-  ""LastName"": ""Test Last Name""
-}".Replace("\r", string.Empty),
-                fakeRequestHandler.RequestsAsString[0].Replace("\r", string.Empty)
+                PostBody: {
+                  ""FirstName"": ""Test First Name"",
+                  ""LastName"": ""Test Last Name""
+                }".NoNewLines(),
+                fakeRequestHandler.RequestsAsString[0].NoNewLines()
             );
         }
 
@@ -80,19 +80,19 @@ PostBody: {
         {
             Assert.AreEqual(
                 @"Uri: http://reqres.in:80/api/users
-Token: 
-Body: TestArgument1: Hello World
-TestArgument2: {
-  ""FirstName"": ""Test First Name"",
-  ""LastName"": ""Test Last Name""
-}".Replace("\r", string.Empty),
+                Token: 
+                Body: TestArgument1: Hello World
+                TestArgument2: {
+                  ""FirstName"": ""Test First Name"",
+                  ""LastName"": ""Test Last Name""
+                }".NoNewLines(),
                 new Elegant.WebRequest("http://reqres.in/api/users")
                     .WithMethod(HttpMethod.Post)
                     .WithBody(new Dictionary<string, IJsonObject>
                     {
                         { "TestArgument1", new SimpleString("Hello World") },
                         { "TestArgument2", new TestJsonObject() },
-                    }).ToString().Replace("\r", string.Empty)
+                    }).ToString().NoNewLines()
             );
         }
 
@@ -101,14 +101,72 @@ TestArgument2: {
         {
             Assert.AreEqual(
                 @"Uri: http://reqres.in:80/api/users
-Token: erYTo
-Body: test string".Replace("\r", string.Empty),
+                Token: erYTo
+                Body: test string".NoNewLines(),
                 new Elegant.WebRequest(
                     new Uri("http://reqres.in/api/users"),
                     new HttpAuthenticationHeaderToken("erYTo"),
                     HttpMethod.Post,
                     new JsonBodyContent(new SimpleString("test string"))
-                ).ToString().Replace("\r", string.Empty)
+                ).ToString().NoNewLines()
+            );
+        }
+
+        [Test]
+        public void WebRequestWithDoubleSlashRelativePath()
+        {
+            Assert.AreEqual(
+                @"Uri: http://reqres.in:80/api/users
+                Token: 
+                Body: ".NoNewLines(),
+                new Elegant.WebRequest("http://reqres.in/")
+                    .WithRelativePath("/api/users")
+                    .ToString().NoNewLines()
+            );
+        }
+
+        [Test]
+        public async Task WebRequestReceivesDataFromRouteHandler()
+        {
+            Assert.AreEqual(
+                "Hello world",
+                await new Elegant.WebRequest(
+                    new Uri("http://reqres.in/api/users"),
+                    new RoutedHttpMessageHandler(
+                        new Route(new Dictionary<string, string>
+                        {
+                            { "http://reqres.in/api/users","Hello world" }
+                        })
+                    )
+                ).ReadAsStringAsync()
+            );
+        }
+
+        [Test]
+        public async Task WebRequestReceivesDataFromRouteHandlerAndDataFile()
+        {
+            Assert.AreEqual(
+                "Hello world testing test.",
+                await new Elegant.WebRequest(
+                    new Uri("http://reqres.in/api/users"),
+                    new RoutedHttpMessageHandler(
+                        new Route().With(
+                            "http://reqres.in/api/users",
+                            "./TestData/TestUploadFile.txt"
+                        )
+                    )
+                ).ReadAsStringAsync()
+            );
+        }
+
+        [Test]
+        public async Task WebRequestReceivesThroughtTheProxyHandler()
+        {
+            Assert.IsNotEmpty(
+                await new Elegant.WebRequest(
+                    new Uri("https://www.google.com/"),
+                    new ProxyHttpMessageHandler()
+                ).ReadAsStringAsync()
             );
         }
 

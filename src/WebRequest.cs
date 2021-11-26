@@ -10,9 +10,9 @@ namespace WebRequest.Elegant
     {
         private readonly Dictionary<string, string> _queryParams;
         private readonly HttpClient _httpClient;
-        private IToken _token;
-        private HttpMethod _httpMethod;
-        private IBodyContent _body;
+        private readonly IToken _token;
+        private readonly HttpMethod _httpMethod;
+        private readonly IBodyContent _body;
 
         #region Constructors
 

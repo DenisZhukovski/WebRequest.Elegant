@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using WebRequest.Elegant.Core;
+
+[assembly: InternalsVisibleTo("WebRequest.Tests")]
 
 namespace WebRequest.Elegant
 {
@@ -44,9 +47,22 @@ namespace WebRequest.Elegant
         }
 
         public WebRequest(
+            Uri uri
+        ) : this(uri, new HttpClient())
+        {
+        }
+
+        public WebRequest(
             Uri uri,
             HttpClient httpClient
         ) : this(new UriFromString(uri), new HttpAuthenticationHeaderToken(), httpClient)
+        {
+        }
+
+        public WebRequest(
+           Uri uri,
+           IToken token
+        ) : this(uri, token, new HttpClient())
         {
         }
 
@@ -239,6 +255,7 @@ namespace WebRequest.Elegant
         public override bool Equals(object obj)
         {
             return object.ReferenceEquals(this, obj)
+                || TheSameWebRequest(obj)
                 || new TheSameUri(Uri, obj).ToBool()
                 || obj is IToken token && _token.Equals(token)
                 || obj is HttpMethod method && _httpMethod == method
@@ -253,6 +270,20 @@ namespace WebRequest.Elegant
 #else
             return new { Uri, _token, _httpMethod, _body, _queryParams }.GetHashCode();
 #endif
+        }
+
+        private bool TheSameWebRequest(object obj)
+        {
+            if (obj is WebRequest webRequest)
+            {
+                return new TheSameUri(Uri, webRequest.Uri).ToBool()
+                    && _token.Equals(webRequest._token)
+                    && _httpMethod == webRequest._httpMethod
+                    && _body.Equals(webRequest._body)
+                    && TheSameQueryParameters(webRequest._queryParams);
+            }
+
+            return false;
         }
 
         private bool TheSameQueryParameters(object obj)

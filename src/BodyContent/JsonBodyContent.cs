@@ -13,6 +13,17 @@ namespace WebRequest.Elegant
             _jsonObject = jsonObject;
         }
 
+        public override bool Equals(object obj)
+        {
+            return obj is IBodyContent content
+                && content.ToString() == ToString();
+        }
+
+        public override int GetHashCode()
+        {
+            return _jsonObject.GetHashCode();
+        }
+
         public void InjectTo(HttpRequestMessage request)
         {
             var jsonAsString = _jsonObject.ToJson();

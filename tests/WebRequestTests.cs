@@ -174,6 +174,70 @@ namespace WebRequest.Tests
             Assert.IsNotEmpty(proxy.ResponsesContent);
         }
 
+        [Test]
+        public void EqualTheSameUri()
+        {
+            Assert.AreEqual(
+                new Elegant.WebRequest(new Uri("http://reqres.in/api/users")),
+                new Elegant.WebRequest(new Uri("http://reqres.in/api/users"))
+            );
+        }
+
+        [Test]
+        public void EqualToUri()
+        {
+            Assert.AreEqual(
+                new Elegant.WebRequest(new Uri("http://reqres.in/api/users")),
+                new Uri("http://reqres.in/api/users")
+            );
+        }
+
+        [Test]
+        public void EqualToHttpMethod()
+        {
+            Assert.AreEqual(
+                new Elegant.WebRequest(
+                    new Uri("http://reqres.in/api/users")
+                ).WithMethod(HttpMethod.Post),
+                HttpMethod.Post
+            );
+        }
+
+        [Test]
+        public void EqualToToken()
+        {
+            Assert.AreEqual(
+                new Elegant.WebRequest(
+                    new Uri("http://reqres.in/api/users"),
+                    new HttpAuthenticationHeaderToken()
+                ),
+                new HttpAuthenticationHeaderToken()
+            );
+        }
+
+        [Test]
+        public void EqualToBodyContent()
+        {
+            Assert.AreEqual(
+                new Elegant.WebRequest(
+                    new Uri("http://reqres.in/api/users"),
+                    new HttpAuthenticationHeaderToken()
+                ),
+                new JsonBodyContent(new EmptyJsonObject())
+            );
+        }
+
+        [Test]
+        public void EqualToQueryParams()
+        {
+            Assert.AreEqual(
+                new Elegant.WebRequest(
+                    new Uri("http://reqres.in/api/users")
+                ).WithQueryParams(new Dictionary<string, string>()),
+                new Dictionary<string, string>()
+            );
+        }
+
         public class TestJsonObject : IJsonObject
         {
             public string ToJson()

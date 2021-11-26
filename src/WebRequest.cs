@@ -9,7 +9,14 @@ using WebRequest.Elegant.Core;
 
 namespace WebRequest.Elegant
 {
-    public sealed class WebRequest : IWebRequest
+    public sealed class WebRequest : IWebRequest,
+        IEquatable<IUri>,
+        IEquatable<Uri>,
+        IEquatable<string>,
+        IEquatable<IToken>,
+        IEquatable<HttpMethod>,
+        IEquatable<IBodyContent>,
+        IEquatable<Dictionary<string, string>>
     {
         private readonly Dictionary<string, string> _queryParams;
         private readonly HttpClient _httpClient;
@@ -241,26 +248,47 @@ namespace WebRequest.Elegant
                    $"Body: {_body}";
         }
 
-        private async Task<HttpRequestMessage> RequestMessageAsync(HttpMethod method)
+        public bool Equals(IUri uri)
         {
-            var request = new HttpRequestMessage(
-                method,
-                new QueryParamsAsString(_queryParams).With(Uri.Uri())
-            );
-            _body.InjectTo(request);
-            await _token.InjectToAsync(request).ConfigureAwait(false);
-            return request;
+            return Uri.Uri().ToString() == uri.Uri().ToString();
+        }
+
+        public bool Equals(Uri dotNetUri)
+        {
+            return Uri.Uri().Equals(dotNetUri);
+        }
+
+        public bool Equals(string uriAsString)
+        {
+            return Uri.Uri().ToString() == uriAsString;
+        }
+
+        public bool Equals(IToken token)
+        {
+            return _token.Equals(token);
+        }
+
+        public bool Equals(HttpMethod other)
+        {
+            return _httpMethod == other;
+        }
+
+        public bool Equals(IBodyContent body)
+        {
+            return _body.Equals(body);
+        }
+
+        public bool Equals(Dictionary<string, string> parameters)
+        {
+            return new TheSameDictionary<string, string>(
+                _queryParams,
+                parameters
+            ).ToBool();
         }
 
         public override bool Equals(object obj)
         {
-            return object.ReferenceEquals(this, obj)
-                || TheSameWebRequest(obj)
-                || new TheSameUri(Uri, obj).ToBool()
-                || obj is IToken token && _token.Equals(token)
-                || obj is HttpMethod method && _httpMethod == method
-                || obj is IBodyContent body && _body.Equals(body)
-                || TheSameQueryParameters(obj);
+            return object.ReferenceEquals(this, obj) || TheSameWebRequest(obj);
         }
 
         public override int GetHashCode()
@@ -270,6 +298,17 @@ namespace WebRequest.Elegant
 #else
             return new { Uri, _token, _httpMethod, _body, _queryParams }.GetHashCode();
 #endif
+        }
+
+        private async Task<HttpRequestMessage> RequestMessageAsync(HttpMethod method)
+        {
+            var request = new HttpRequestMessage(
+                method,
+                new QueryParamsAsString(_queryParams).With(Uri.Uri())
+            );
+            _body.InjectTo(request);
+            await _token.InjectToAsync(request).ConfigureAwait(false);
+            return request;
         }
 
         private bool TheSameWebRequest(object obj)

@@ -184,7 +184,7 @@ namespace WebRequest.Tests
         }
 
         [Test]
-        public void NoEqualWhenDIfferentUri()
+        public void NoEqualWhenDifferentUri()
         {
             Assert.AreNotEqual(
                 new Elegant.WebRequest(new Uri("http://reqres.in/api/users")),
@@ -207,6 +207,24 @@ namespace WebRequest.Tests
             Assert.AreNotEqual(
                 new Elegant.WebRequest(new Uri("http://reqres.in/api/users")),
                 new Uri("http://reqres.in/api/users2")
+            );
+        }
+
+        [Test]
+        public void EqualToTheSameUriString()
+        {
+            Assert.AreEqual(
+                new Elegant.WebRequest(new Uri("http://reqres.in/api/users")),
+                "http://reqres.in/api/users"
+            );
+        }
+
+        [Test]
+        public void NotEqualToDiffUriString()
+        {
+            Assert.AreNotEqual(
+                new Elegant.WebRequest(new Uri("http://reqres.in/api/users")),
+                "http://reqres.in/api/users2"
             );
         }
 

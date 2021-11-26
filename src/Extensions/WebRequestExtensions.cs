@@ -3,15 +3,21 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
+using WebRequest.Elegant.Core;
 using WebRequest.Elegant.Extensions;
 
 namespace WebRequest.Elegant
 {
     public static class WebRequestExtensions
     {
+        public static IWebRequest WithPath(this IWebRequest request, Uri uri)
+        {
+            return request.WithPath(new UriFromString(uri));
+        }
+
         public static IWebRequest WithPath(this IWebRequest request, string url)
         {
-            return request.WithPath(new Uri(url));
+            return request.WithPath(new UriFromString(url));
         }
 
         public static IWebRequest WithRelativePath(this IWebRequest request, string url)
@@ -20,7 +26,7 @@ namespace WebRequest.Elegant
             {
                 url = url.TrimStart('/');
             }
-            return request.WithPath(new Uri(request.Uri.AbsoluteUri + url));
+            return request.WithPath(new Uri(request.Uri.Uri().AbsoluteUri + url));
         }
 
         public static IWebRequest WithBody(this IWebRequest request, IJsonObject body)
@@ -73,7 +79,8 @@ namespace WebRequest.Elegant
 
         private static bool HasDoubleSlash(IWebRequest request, string url)
         {
-            return request.Uri.AbsoluteUri[request.Uri.AbsoluteUri.Length - 1] == '/'
+            var uri = request.Uri.Uri();
+            return uri.AbsoluteUri[uri.AbsoluteUri.Length - 1] == '/'
                 && url[0] == '/';
         }
     }

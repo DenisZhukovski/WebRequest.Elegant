@@ -10,6 +10,11 @@ namespace WebRequest.Elegant
     {
         private readonly Dictionary<string, string> _queryParams;
         private readonly HttpClient _httpClient;
+        private IToken _token;
+        private HttpMethod _httpMethod;
+        private IBodyContent _body;
+
+        #region Constructors
 
         public WebRequest(
             string uriString
@@ -20,28 +25,28 @@ namespace WebRequest.Elegant
         public WebRequest(
             string uriString,
             HttpClient httpClient
-        ) : this(new Uri(uriString), httpClient)
+        ) : this(new UriFromString(uriString), httpClient)
         {
         }
 
         public WebRequest(
             string uriString,
             HttpMessageHandler messageHandler
-        ) : this(new Uri(uriString), messageHandler)
+        ) : this(new UriFromString(uriString), messageHandler)
         {
         }
 
         public WebRequest(
             Uri uri,
             HttpMessageHandler messageHandler
-        ) : this(uri, new HttpClient(messageHandler))
+        ) : this(new UriFromString(uri), new HttpClient(messageHandler))
         {
         }
 
         public WebRequest(
             Uri uri,
             HttpClient httpClient
-        ) : this(uri, new HttpAuthenticationHeaderToken(), httpClient)
+        ) : this(new UriFromString(uri), new HttpAuthenticationHeaderToken(), httpClient)
         {
         }
 
@@ -50,8 +55,8 @@ namespace WebRequest.Elegant
             IToken token,
             HttpClient httpClient
         ) : this(
+                new UriFromString(uri),
                 token,
-                uri,
                 HttpMethod.Get,
                 new JsonBodyContent(new EmptyJsonObject()),
                 new Dictionary<string, string>(),
@@ -66,8 +71,8 @@ namespace WebRequest.Elegant
             HttpMethod method,
             IBodyContent body
         ) : this(
+                new UriFromString(uri),
                 token,
-                uri,
                 method,
                 body,
                 new Dictionary<string, string>(),
@@ -77,32 +82,84 @@ namespace WebRequest.Elegant
         }
 
         public WebRequest(
-            IToken token,
             Uri uri,
+            IToken token,
+            HttpMethod method,
+            IBodyContent body,
+            Dictionary<string, string> queryParams,
+            HttpClient httpClient)
+            : this(new UriFromString(uri), token, method, body, queryParams, httpClient)
+        {
+        }
+
+        public WebRequest(
+            IUri uri,
+            HttpMessageHandler messageHandler
+        ) : this(uri, new HttpClient(messageHandler))
+        {
+        }
+
+        public WebRequest(
+            IUri uri,
+            HttpClient httpClient
+        ) : this(uri, new HttpAuthenticationHeaderToken(), httpClient)
+        {
+        }
+
+        public WebRequest(
+            IUri uri,
+            IToken token,
+            HttpClient httpClient
+        ) : this(
+                uri,
+                token,
+                HttpMethod.Get,
+                new JsonBodyContent(new EmptyJsonObject()),
+                new Dictionary<string, string>(),
+                httpClient
+            )
+        {
+        }
+
+        public WebRequest(
+            IUri uri,
+            IToken token,
+            HttpMethod method,
+            IBodyContent body
+        ) : this(
+                uri,
+                token,
+                method,
+                body,
+                new Dictionary<string, string>(),
+                new HttpClient()
+            )
+        {
+        }
+
+        public WebRequest(
+            IUri uri,
+            IToken token,
             HttpMethod method,
             IBodyContent body,
             Dictionary<string, string> queryParams,
             HttpClient httpClient)
         {
             Uri = uri ?? throw new ArgumentNullException(nameof(uri));
-            Token = token ?? throw new ArgumentNullException(nameof(token));
-            HttpMethod = method ?? throw new ArgumentNullException(nameof(method));
-            Body = body ?? throw new ArgumentNullException(nameof(body));
+            _token = token ?? throw new ArgumentNullException(nameof(token));
+            _httpMethod = method ?? throw new ArgumentNullException(nameof(method));
+            _body = body ?? throw new ArgumentNullException(nameof(body));
             _queryParams = queryParams ?? throw new ArgumentNullException(nameof(queryParams));
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         }
 
-        public IToken Token { get; }
+        #endregion
 
-        public Uri Uri { get; }
-
-        public HttpMethod HttpMethod { get; }
-
-        public IBodyContent Body { get; }
+        public IUri Uri { get; }
 
         public async Task<HttpResponseMessage> GetResponseAsync()
         {
-            var requestMessage = await RequestMessageAsync(HttpMethod).ConfigureAwait(false);
+            var requestMessage = await RequestMessageAsync(_httpMethod).ConfigureAwait(false);
             try
             {
                 return await _httpClient.SendAsync(requestMessage).ConfigureAwait(false);
@@ -113,13 +170,13 @@ namespace WebRequest.Elegant
             }
         }
 
-        public IWebRequest WithPath(Uri uri)
+        public IWebRequest WithPath(IUri uri)
         {
             return new WebRequest(
-                Token,
                 uri,
-                HttpMethod,
-                Body,
+                _token,
+                _httpMethod,
+                _body,
                 _queryParams,
                 _httpClient
             );
@@ -128,10 +185,10 @@ namespace WebRequest.Elegant
         public IWebRequest WithMethod(HttpMethod method)
         {
             return new WebRequest(
-                Token,
                 Uri,
+                _token,
                 method,
-                Body,
+                _body,
                 _queryParams,
                 _httpClient
             );
@@ -140,10 +197,10 @@ namespace WebRequest.Elegant
         public IWebRequest WithQueryParams(Dictionary<string, string> parameters)
         {
             return new WebRequest(
-                Token,
                 Uri,
-                HttpMethod,
-                Body,
+                _token,
+                _httpMethod,
+                _body,
                 parameters,
                 _httpClient
             );
@@ -152,9 +209,9 @@ namespace WebRequest.Elegant
         public IWebRequest WithBody(IBodyContent body)
         {
             return new WebRequest(
-                Token,
                 Uri,
-                HttpMethod,
+                _token,
+                _httpMethod,
                 body,
                 _queryParams,
                 _httpClient
@@ -163,20 +220,52 @@ namespace WebRequest.Elegant
 
         public override string ToString()
         {
-            return $"Uri: {new QueryParamsAsString(_queryParams).With(Uri)}\n" +
-                   $"Token: {Token}\n" +
-                   $"Body: {Body}";
+            return $"Uri: {new QueryParamsAsString(_queryParams).With(Uri.Uri())}\n" +
+                   $"Token: {_token}\n" +
+                   $"Body: {_body}";
         }
 
         private async Task<HttpRequestMessage> RequestMessageAsync(HttpMethod method)
         {
             var request = new HttpRequestMessage(
                 method,
-                new QueryParamsAsString(_queryParams).With(Uri)
+                new QueryParamsAsString(_queryParams).With(Uri.Uri())
             );
-            Body.InjectTo(request);
-            await Token.InjectToAsync(request).ConfigureAwait(false);
+            _body.InjectTo(request);
+            await _token.InjectToAsync(request).ConfigureAwait(false);
             return request;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return object.ReferenceEquals(this, obj)
+                || new TheSameUri(Uri, obj).ToBool()
+                || obj is IToken token && _token.Equals(token)
+                || obj is HttpMethod method && _httpMethod == method
+                || obj is IBodyContent body && _body.Equals(body)
+                || TheSameQueryParameters(obj);
+        }
+
+        public override int GetHashCode()
+        {
+#if NETSTANDARD2_1
+            return HashCode.Combine(Uri, _token, _httpMethod, _body, _queryParams);
+#else
+            return new { Uri, _token, _httpMethod, _body, _queryParams }.GetHashCode();
+#endif
+        }
+
+        private bool TheSameQueryParameters(object obj)
+        {
+            if (obj is Dictionary<string, string> parameters)
+            {
+                return new TheSameDictionary<string, string>(
+                    _queryParams,
+                    parameters
+                ).ToBool();
+            }
+
+            return false;
         }
     }
 }

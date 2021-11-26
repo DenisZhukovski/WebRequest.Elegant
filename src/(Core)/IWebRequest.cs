@@ -12,21 +12,9 @@ namespace WebRequest.Elegant
     public interface IWebRequest
     {
         /// <summary>
-        /// Gets the web request token.
-        /// </summary>
-        IToken Token { get; }
-
-        /// <summary>
         /// Gets the web request Uri.
         /// </summary>
-        Uri Uri { get; }
-
-        /// <summary>
-        ///     Get the web request http method.
-        /// </summary>
-        HttpMethod HttpMethod { get; }
-
-        IBodyContent Body { get; }
+        IUri Uri { get; }
 
         /// <summary>
         /// Executes the web request.
@@ -39,7 +27,7 @@ namespace WebRequest.Elegant
         /// </summary>
         /// <param name="uri">Target web uri.</param>
         /// <returns>New web request that configured with specified path.</returns>
-        IWebRequest WithPath(Uri uri);
+        IWebRequest WithPath(IUri uri);
 
         /// <summary>
         /// Creates a new web request with specified http method.

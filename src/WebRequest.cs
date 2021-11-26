@@ -248,37 +248,37 @@ namespace WebRequest.Elegant
                    $"Body: {_body}";
         }
 
-        public bool Equals(IUri uri)
+        bool IEquatable<IUri>.Equals(IUri uri)
         {
             return Uri.Uri().ToString() == uri.Uri().ToString();
         }
 
-        public bool Equals(Uri dotNetUri)
+        bool IEquatable<Uri>.Equals(Uri dotNetUri)
         {
             return Uri.Uri().Equals(dotNetUri);
         }
 
-        public bool Equals(string uriAsString)
+        bool IEquatable<string>.Equals(string uriAsString)
         {
             return Uri.Uri().ToString() == uriAsString;
         }
 
-        public bool Equals(IToken token)
+        bool IEquatable<IToken>.Equals(IToken token)
         {
             return _token.Equals(token);
         }
 
-        public bool Equals(HttpMethod other)
+        bool IEquatable<HttpMethod>.Equals(HttpMethod other)
         {
             return _httpMethod == other;
         }
 
-        public bool Equals(IBodyContent body)
+        bool IEquatable<IBodyContent>.Equals(IBodyContent body)
         {
             return _body.Equals(body);
         }
 
-        public bool Equals(Dictionary<string, string> parameters)
+        bool IEquatable<Dictionary<string, string>>.Equals(Dictionary<string, string> parameters)
         {
             return new TheSameDictionary<string, string>(
                 _queryParams,

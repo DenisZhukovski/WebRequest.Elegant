@@ -3,7 +3,7 @@ using WebRequest.Elegant.Core;
 
 namespace WebRequest.Elegant
 {
-    public class TheSameUri
+    internal class TheSameUri
     {
         private readonly IUri _uri;
         private readonly object _obj;

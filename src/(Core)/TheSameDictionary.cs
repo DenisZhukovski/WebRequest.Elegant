@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace WebRequest.Elegant.Core
 {
-    public class TheSameDictionary<TKey, TValue>
+    internal class TheSameDictionary<TKey, TValue>
     {
         private readonly Dictionary<TKey, TValue> _expected;
         private readonly Dictionary<TKey, TValue> _actual;

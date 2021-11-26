@@ -184,7 +184,16 @@ namespace WebRequest.Tests
         }
 
         [Test]
-        public void EqualToUri()
+        public void NoEqualWhenDIfferentUri()
+        {
+            Assert.AreNotEqual(
+                new Elegant.WebRequest(new Uri("http://reqres.in/api/users")),
+                new Elegant.WebRequest(new Uri("http://reqres.in/api/users2"))
+            );
+        }
+
+        [Test]
+        public void EqualToTheSameUri()
         {
             Assert.AreEqual(
                 new Elegant.WebRequest(new Uri("http://reqres.in/api/users")),
@@ -193,7 +202,16 @@ namespace WebRequest.Tests
         }
 
         [Test]
-        public void EqualToHttpMethod()
+        public void NotEqualToDiffUri()
+        {
+            Assert.AreNotEqual(
+                new Elegant.WebRequest(new Uri("http://reqres.in/api/users")),
+                new Uri("http://reqres.in/api/users2")
+            );
+        }
+
+        [Test]
+        public void EqualToTheSameHttpMethod()
         {
             Assert.AreEqual(
                 new Elegant.WebRequest(
@@ -204,7 +222,18 @@ namespace WebRequest.Tests
         }
 
         [Test]
-        public void EqualToToken()
+        public void EqualToDiffHttpMethod()
+        {
+            Assert.AreNotEqual(
+                new Elegant.WebRequest(
+                    new Uri("http://reqres.in/api/users")
+                ).WithMethod(HttpMethod.Post),
+                HttpMethod.Get
+            );
+        }
+
+        [Test]
+        public void EqualToSameToken()
         {
             Assert.AreEqual(
                 new Elegant.WebRequest(
@@ -216,7 +245,19 @@ namespace WebRequest.Tests
         }
 
         [Test]
-        public void EqualToBodyContent()
+        public void NotEqualToDiffToken()
+        {
+            Assert.AreNotEqual(
+                new Elegant.WebRequest(
+                    new Uri("http://reqres.in/api/users"),
+                    new HttpAuthenticationHeaderToken()
+                ),
+                new HttpAuthenticationHeaderToken("token1")
+            );
+        }
+
+        [Test]
+        public void EqualToTheSameBodyContent()
         {
             Assert.AreEqual(
                 new Elegant.WebRequest(
@@ -228,13 +269,48 @@ namespace WebRequest.Tests
         }
 
         [Test]
-        public void EqualToQueryParams()
+        public void NotEqualToDiffBodyContent()
+        {
+            Assert.AreNotEqual(
+                new Elegant.WebRequest(
+                    new Uri("http://reqres.in/api/users"),
+                    new HttpAuthenticationHeaderToken()
+                ),
+                new JsonBodyContent(new SimpleString("Hello"))
+            );
+        }
+
+        [Test]
+        public void EqualToTheSameQueryParams()
         {
             Assert.AreEqual(
                 new Elegant.WebRequest(
                     new Uri("http://reqres.in/api/users")
-                ).WithQueryParams(new Dictionary<string, string>()),
-                new Dictionary<string, string>()
+                ).WithQueryParams(new Dictionary<string, string>()
+                {
+                    { "test", "test" }
+                }),
+                new Dictionary<string, string>
+                {
+                    { "test", "test" }
+                }
+            );
+        }
+
+        [Test]
+        public void EqualToDiffQueryParams()
+        {
+            Assert.AreNotEqual(
+                new Elegant.WebRequest(
+                    new Uri("http://reqres.in/api/users")
+                ).WithQueryParams(new Dictionary<string, string>()
+                {
+                    { "test", "test" }
+                }),
+                new Dictionary<string, string>
+                {
+                    { "test", "test1" }
+                }
             );
         }
 

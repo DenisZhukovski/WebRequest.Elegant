@@ -18,11 +18,11 @@ namespace WebRequest.Elegant
         IEquatable<IBodyContent>,
         IEquatable<Dictionary<string, string>>
     {
-        private readonly Dictionary<string, string> _queryParams;
         private readonly HttpClient _httpClient;
-        private readonly IToken _token;
-        private readonly HttpMethod _httpMethod;
-        private readonly IBodyContent _body;
+        internal readonly Dictionary<string, string> _queryParams;
+        internal readonly IToken _token;
+        internal readonly HttpMethod _httpMethod;
+        internal readonly IBodyContent _body;
 
         #region Constructors
 
@@ -288,7 +288,8 @@ namespace WebRequest.Elegant
 
         public override bool Equals(object obj)
         {
-            return object.ReferenceEquals(this, obj) || TheSameWebRequest(obj);
+            return object.ReferenceEquals(this, obj)
+                || new TheSameWebRequest(this, obj).ToBool();
         }
 
         public override int GetHashCode()
@@ -309,33 +310,6 @@ namespace WebRequest.Elegant
             _body.InjectTo(request);
             await _token.InjectToAsync(request).ConfigureAwait(false);
             return request;
-        }
-
-        private bool TheSameWebRequest(object obj)
-        {
-            if (obj is WebRequest webRequest)
-            {
-                return new TheSameUri(Uri, webRequest.Uri).ToBool()
-                    && _token.Equals(webRequest._token)
-                    && _httpMethod == webRequest._httpMethod
-                    && _body.Equals(webRequest._body)
-                    && TheSameQueryParameters(webRequest._queryParams);
-            }
-
-            return false;
-        }
-
-        private bool TheSameQueryParameters(object obj)
-        {
-            if (obj is Dictionary<string, string> parameters)
-            {
-                return new TheSameDictionary<string, string>(
-                    _queryParams,
-                    parameters
-                ).ToBool();
-            }
-
-            return false;
         }
     }
 }

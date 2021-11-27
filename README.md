@@ -39,7 +39,7 @@ public class Users
 The main goal of this approach is to become a staple component for the SDKs that are built like tree structure.
 
 ## Useful extension
-This enxention method is useful when its needed to deserialize the response into an object. It was not added into the original package because JsonConvert class creates dependency in 3rd party component but it's been decided not to pin on any 3rd party libraries.
+This enxention method is useful when its needed to deserialize the response into an object. It was not added into the original package because JsonConvert class creates dependency on 3rd party component but it's been decided not to pin on any 3rd party libraries.
 
 ```cs
 public static class WebRequestExtensions
@@ -59,7 +59,45 @@ public static class WebRequestExtensions
    }
 }
 ```
+## In Unit Tests
+To help developers in writing unit tests WebRequest.Elegant package contains some useful classes to assist.
+<br/>
+[FkHttpMessageHandler](https://github.com/DenisZhukovski/WebRequest.Elegant/blob/master/src/Fakes/FkHttpMessageHandler.cs) can be used to fake all responses from the real server. All the requests' responses will be mocked with configured one.
+```cs
+await new Elegant.WebRequest(
+   "http://reqres.in/api/users",
+   new FkHttpMessageHandler("Response message as a text here")
+).UploadFileAsync(filePath);
+```
+[RoutedHttpMessageHandler](https://github.com/DenisZhukovski/WebRequest.Elegant/blob/master/src/Fakes/RoutedHttpMessageHandler.cs) can be used to fake a real server responses for particular URIs. All the requests' responses will be mocked by route map.
+### Important:
+[RoutedHttpMessageHandler](https://github.com/DenisZhukovski/WebRequest.Elegant/blob/master/src/Fakes/RoutedHttpMessageHandler.cs) will pass the request to original [HttpClientHandler](https://docs.microsoft.com/en-us/dotnet/api/system.net.http.httpclienthandler?view=net-6.0) when no configured route is found.
+```cs
+Assert.AreEqual(
+   "Hello world",
+   await new Elegant.WebRequest(
+      new Uri("http://reqres.in/api/users"),
+      new RoutedHttpMessageHandler(
+         new Route(new Dictionary<string, string>
+         {
+            // It's key value pair where key is uri to be mocked and value is a message that will be responded.
+            { "http://reqres.in/api/users", "Hello world" }
+         })
+      )
+    ).ReadAsStringAsync()
+);
+```
+[ProxyHttpMessageHandler](https://github.com/DenisZhukovski/WebRequest.Elegant/blob/master/src/Fakes/ProxyHttpMessageHandler.cs) can be used to proxy all the requests/responses.
+```cs
+var proxy = new ProxyHttpMessageHandler();
+await new Elegant.WebRequest(
+   new Uri("https://www.google.com/"),
+   proxy
+).ReadAsStringAsync()
 
+Assert.IsNotEmpty(proxy.RequestsContent);
+Assert.IsNotEmpty(proxy.ResponsesContent);
+```
 ## Build status
 
 <div align="center">

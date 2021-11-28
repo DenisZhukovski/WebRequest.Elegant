@@ -98,6 +98,27 @@ await new Elegant.WebRequest(
 Assert.IsNotEmpty(proxy.RequestsContent);
 Assert.IsNotEmpty(proxy.ResponsesContent);
 ```
+## Equal to
+Despite the fact that [WebRequest](https://github.com/DenisZhukovski/WebRequest.Elegant/blob/master/src/WebRequest.cs) entity tries to encapsulate internal state it still provides smart Equal method:
+```cs
+Assert.AreEqual(
+   new Elegant.WebRequest(new Uri("http://reqres.in/api/users")),
+   new Uri("http://reqres.in/api/users")
+);
+
+Assert.AreEqual(
+   new Elegant.WebRequest(new Uri("http://reqres.in/api/users")),
+   "http://reqres.in/api/users"
+);
+
+Assert.AreEqual(
+   new Elegant.WebRequest(
+      new Uri("http://reqres.in/api/users")
+   ).WithMethod(HttpMethod.Post),
+   HttpMethod.Post
+);
+```
+
 ## Build status
 
 <div align="center">

@@ -76,6 +76,31 @@ namespace WebRequest.Tests
         }
 
         [Test]
+        public async Task StringBodyInPostMethod()
+        {
+            var fakeRequestHandler = new FkHttpMessageHandler("Test message");
+            await new Elegant.WebRequest(
+                "http://reqres.in/api/users",
+                fakeRequestHandler
+            )
+            .WithMethod(HttpMethod.Post)
+            .WithBody(@"{
+                  ""FirstName"": ""Test First Name"",
+                  ""LastName"": ""Test Last Name""
+                }")
+            .EnsureSuccessAsync();
+
+            Assert.AreEqual(
+                @"Request: http://reqres.in/api/users
+                PostBody: {
+                  ""FirstName"": ""Test First Name"",
+                  ""LastName"": ""Test Last Name""
+                }".NoNewLines(),
+                fakeRequestHandler.RequestsAsString[0].NoNewLines()
+            );
+        }
+
+        [Test]
         public void WebRequestToString()
         {
             Assert.AreEqual(
@@ -213,6 +238,17 @@ namespace WebRequest.Tests
                     new Uri("http://reqres.in/api/users")
                 ).WithMethod(HttpMethod.Post),
                 HttpMethod.Get
+            );
+        }
+
+        [Test]
+        public void IsPostRequest()
+        {
+            Assert.True(
+                new Elegant.WebRequest(
+                    new Uri("http://reqres.in/api/users")
+                ).WithMethod(HttpMethod.Post)
+                 .IsPost()
             );
         }
 

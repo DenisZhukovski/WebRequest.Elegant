@@ -12,6 +12,10 @@ namespace WebRequest.Elegant
     {
         public static bool IsPost(this IWebRequest request)
         {
+            if (request is IEquatable<HttpMethod> method)
+            {
+                return method.Equals(HttpMethod.Post);
+            }
             return request.Equals(HttpMethod.Post);
         }
 

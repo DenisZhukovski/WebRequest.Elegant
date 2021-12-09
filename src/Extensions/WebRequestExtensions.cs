@@ -10,6 +10,11 @@ namespace WebRequest.Elegant
 {
     public static class WebRequestExtensions
     {
+        public static bool IsPost(this IWebRequest request)
+        {
+            return request.Equals(HttpMethod.Post);
+        }
+
         public static IWebRequest WithPath(this IWebRequest request, Uri uri)
         {
             return request.WithPath(new UriFromString(uri));
@@ -29,6 +34,11 @@ namespace WebRequest.Elegant
             return request.WithPath(new Uri(request.Uri.Uri().AbsoluteUri + url));
         }
 
+        public static IWebRequest WithBody(this IWebRequest request, string body)
+        {
+            return request.WithBody(new StringContent(body));
+        }
+
         public static IWebRequest WithBody(this IWebRequest request, IJsonObject body)
         {
             return request.WithBody(new JsonBodyContent(body));
@@ -44,7 +54,10 @@ namespace WebRequest.Elegant
             return request.WithBody(new HttpBodyContent(content));
         }
 
-        public static Task<HttpResponseMessage> UploadFileAsync(this IWebRequest webRequest, Stream fileStream, string fileName)
+        public static Task<HttpResponseMessage> UploadFileAsync(
+            this IWebRequest webRequest,
+            Stream fileStream,
+            string fileName)
         {
             return webRequest
                 .WithMethod(HttpMethod.Post)
@@ -52,7 +65,9 @@ namespace WebRequest.Elegant
                 .GetResponseAsync();
         }
 
-        public static Task<HttpResponseMessage> UploadFileAsync(this IWebRequest webRequest, string filePath)
+        public static Task<HttpResponseMessage> UploadFileAsync(
+            this IWebRequest webRequest,
+            string filePath)
         {
             var fileStream = new FileStream(filePath, FileMode.Open);
             return webRequest.UploadFileAsync(fileStream, fileStream.Name);

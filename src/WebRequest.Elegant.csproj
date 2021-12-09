@@ -10,6 +10,6 @@
     <PackageProjectUrl>https://github.com/DenisZhukovski/WebRequest.Elegant</PackageProjectUrl>
     <RepositoryUrl>https://github.com/DenisZhukovski/WebRequest.Elegant</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageVersion>1.1.0.0</PackageVersion>
+    <PackageVersion>1.1.0.1</PackageVersion>
   </PropertyGroup>
 </Project>

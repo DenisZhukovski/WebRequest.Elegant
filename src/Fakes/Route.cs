@@ -39,12 +39,22 @@ namespace WebRequest.Elegant.Fakes
 
         public bool Matches(Uri uri)
         {
-            return _responses.ContainsKey(uri);
+            if  (_responses.ContainsKey(uri))
+            {
+                return true;
+            }
+
+            return _responses.ContainsKey(new Uri(uri.GetLeftPart(UriPartial.Path)));
         }
 
         public HttpResponseMessage Response(Uri uri)
         {
-            return _responses[uri];
+            if (_responses.TryGetValue(uri, out HttpResponseMessage response))
+            {
+                return response;
+            }
+
+            return _responses[new Uri(uri.GetLeftPart(UriPartial.Path))];
         }
 
         private static HttpResponseMessage ToResponseMessage(string data)

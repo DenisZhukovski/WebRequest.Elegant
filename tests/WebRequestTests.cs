@@ -126,40 +126,6 @@ namespace WebRequest.Tests
         }
 
         [Test]
-        public async Task WebRequestReceivesDataFromRouteHandler()
-        {
-            Assert.AreEqual(
-                "Hello world",
-                await new Elegant.WebRequest(
-                    new Uri("http://reqres.in/api/users"),
-                    new RoutedHttpMessageHandler(
-                        new Route(new Dictionary<string, string>
-                        {
-                            { "http://reqres.in/api/users","Hello world" }
-                        })
-                    )
-                ).ReadAsStringAsync()
-            );
-        }
-
-        [Test]
-        public async Task WebRequestReceivesDataFromRouteHandlerAndDataFile()
-        {
-            Assert.AreEqual(
-                "Hello world testing test.",
-                await new Elegant.WebRequest(
-                    new Uri("http://reqres.in/api/users"),
-                    new RoutedHttpMessageHandler(
-                        new Route().With(
-                            "http://reqres.in/api/users",
-                            "./TestData/TestUploadFile.txt"
-                        )
-                    )
-                ).ReadAsStringAsync()
-            );
-        }
-
-        [Test]
         public async Task WebRequestReceivesThroughtTheProxyHandler()
         {
             var proxy = new ProxyHttpMessageHandler();

@@ -62,12 +62,8 @@ public static class WebRequestExtensions
       }
       catch (Exception ex)
       {
-         var invalidOperationException = new InvalidOperationException(
-            $"Web Request error occured for {request}",
-            ex
-         );
-         invalidOperationException.Data["Content"] = content;
-         throw invalidOperationException;
+         ex.Data["Content"] = content;
+         throw;
       }
    }
 

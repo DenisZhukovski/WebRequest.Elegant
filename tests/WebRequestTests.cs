@@ -340,7 +340,7 @@ namespace WebRequest.Tests
         }
 
         [Test]
-        public async Task ThrowsInvalidOperationException_FromUploadFile_WhenServerException()
+        public void ThrowsInvalidOperationException_FromUploadFile_WhenServerException()
         {
             Assert.ThrowsAsync<InvalidOperationException>(() =>
                new Elegant.WebRequest(

@@ -318,6 +318,39 @@ namespace WebRequest.Tests
         }
 
         [Test]
+        public void ThrowsInvalidOperationException_FromReadAsStringAsync_WhenServerException()
+        {
+            Assert.ThrowsAsync<InvalidOperationException>(() =>
+                new Elegant.WebRequest(
+                    new Uri("http://reqres.in/api/users"),
+                    new ExceptionHttpMessageHandler(new HttpRequestException("Not Host is found"))
+                ).ReadAsStringAsync()
+            );
+        }
+
+        [Test]
+        public void ThrowsInvalidOperationException_FromEnsureSuccessAsync_WhenServerException()
+        {
+            Assert.ThrowsAsync<InvalidOperationException>(() =>
+                new Elegant.WebRequest(
+                    new Uri("http://reqres.in/api/users"),
+                    new ExceptionHttpMessageHandler(new HttpRequestException("Not Host is found"))
+                ).EnsureSuccessAsync()
+            );
+        }
+
+        [Test]
+        public async Task ThrowsInvalidOperationException_FromUploadFile_WhenServerException()
+        {
+            Assert.ThrowsAsync<InvalidOperationException>(() =>
+               new Elegant.WebRequest(
+                   "http://reqres.in/api/users",
+                    new ExceptionHttpMessageHandler(new HttpRequestException("Not Host is found"))
+               ).UploadFileAsync("./TestData/TestUploadFile.txt")
+            );
+        }
+
+        [Test]
         public void EqualToDiffQueryParams()
         {
             Assert.AreNotEqual(

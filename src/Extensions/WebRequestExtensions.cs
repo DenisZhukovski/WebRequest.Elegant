@@ -71,14 +71,14 @@ namespace WebRequest.Elegant
             return webRequest.UploadFileAsync(fileStream, fileStream.Name);
         }
 
-        public static Task<HttpResponseMessage> UploadFileAsync(
+        public static async Task<HttpResponseMessage> UploadFileAsync(
             this IWebRequest webRequest,
             Stream fileStream,
             string fileName)
         {
             try
             {
-                return webRequest
+                return await webRequest
                     .WithMethod(HttpMethod.Post)
                     .WithBody(fileStream.ToStreamContent(fileName))
                     .GetResponseAsync();

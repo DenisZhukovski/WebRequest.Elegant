@@ -12,11 +12,16 @@ namespace WebRequest.Elegant
     {
         public static bool IsPost(this IWebRequest request)
         {
-            if (request is IEquatable<HttpMethod> method)
+            return request.Equals<HttpMethod>(HttpMethod.Post);
+        }
+
+        public static bool Equals<T>(this IWebRequest webRequest, T other)
+        {
+            if (webRequest is IEquatable<T> equatable)
             {
-                return method.Equals(HttpMethod.Post);
+                return equatable.Equals(other);
             }
-            return request.Equals(HttpMethod.Post);
+            return webRequest.Equals(other);
         }
 
         public static IWebRequest WithPath(this IWebRequest request, Uri uri)
@@ -60,40 +65,70 @@ namespace WebRequest.Elegant
 
         public static Task<HttpResponseMessage> UploadFileAsync(
             this IWebRequest webRequest,
-            Stream fileStream,
-            string fileName)
-        {
-            return webRequest
-                .WithMethod(HttpMethod.Post)
-                .WithBody(fileStream.ToStreamContent(fileName))
-                .GetResponseAsync();
-        }
-
-        public static Task<HttpResponseMessage> UploadFileAsync(
-            this IWebRequest webRequest,
             string filePath)
         {
             var fileStream = new FileStream(filePath, FileMode.Open);
             return webRequest.UploadFileAsync(fileStream, fileStream.Name);
         }
 
+        public static async Task<HttpResponseMessage> UploadFileAsync(
+            this IWebRequest webRequest,
+            Stream fileStream,
+            string fileName)
+        {
+            try
+            {
+                return await webRequest
+                    .WithMethod(HttpMethod.Post)
+                    .WithBody(fileStream.ToStreamContent(fileName))
+                    .GetResponseAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException(
+                   $"Web Request error occured for {webRequest}",
+                   ex
+                );
+            }
+        }
+
         public static async Task EnsureSuccessAsync(this IWebRequest request)
         {
-            var response = await request
-                .GetResponseAsync()
-                .ConfigureAwait(false);
-            response.EnsureSuccessStatusCode();
+            try
+            {
+                var response = await request
+                    .GetResponseAsync()
+                    .ConfigureAwait(false);
+                response.EnsureSuccessStatusCode();
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException(
+                   $"Web Request error occured for {request}",
+                   ex
+                );
+            }
         }
 
         public static async Task<string> ReadAsStringAsync(this IWebRequest request)
         {
-            var response = await request
-               .GetResponseAsync()
-               .ConfigureAwait(false);
-            response.EnsureSuccessStatusCode();
-            return await response.Content
-               .ReadAsStringAsync()
-               .ConfigureAwait(false);
+            try
+            {
+                var response = await request
+                   .GetResponseAsync()
+                   .ConfigureAwait(false);
+                response.EnsureSuccessStatusCode();
+                return await response.Content
+                   .ReadAsStringAsync()
+                   .ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException(
+                   $"Web Request error occured for {request}",
+                   ex
+                );
+            }
         }
 
         private static bool HasDoubleSlash(IWebRequest request, string url)

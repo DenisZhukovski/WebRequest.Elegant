@@ -39,6 +39,20 @@ public class Users
 
 The main goal of this approach is to become a staple component for the SDKs that are built like tree structure.
 
+## Post Web Form
+
+```cs
+_webRequest
+    .WithMethod(System.Net.Http.HttpMethod.Post)
+    .WithBody(
+         new Dictionary<string, IJsonObject>
+         {
+            { "testData", new SimpleString("some text data") },
+            { "json", new JsonObject(...) }
+         })
+    .EnsureSuccessAsync();
+```
+
 ## Useful extension
 This enxention method is useful when its needed to deserialize the response into an object. It was not added into the original package because JsonConvert class creates dependency on 3rd party component but it's been decided not to pin on any 3rd party libraries.
 

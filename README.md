@@ -40,7 +40,7 @@ public class Users
 The main goal of this approach is to become a staple component for the SDKs that are built like tree structure.
 
 ## Post Web Form
-
+The example below shows how to generate web form post request and send it to the server.
 ```cs
 _webRequest
     .WithMethod(System.Net.Http.HttpMethod.Post)

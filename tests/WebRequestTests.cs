@@ -22,15 +22,14 @@ namespace WebRequest.Tests
         {
             var fakeRequestHandler = new FkHttpMessageHandler("Test message");
             await new Elegant.WebRequest(
-                "http://reqres.in/api/users",
-                fakeRequestHandler
-            )
-            .WithMethod(HttpMethod.Post)
-            .WithBody(new Dictionary<string, IJsonObject>
-            {
-                { "TestArgument1", new SimpleString("Hello World") },
-                { "TestArgument2", new TestJsonObject() },
-            }).GetResponseAsync();
+                    "http://reqres.in/api/users",
+                    fakeRequestHandler
+                )
+                .PostAsync(new Dictionary<string, IJsonObject>
+                {
+                    { "TestArgument1", new SimpleString("Hello World") },
+                    { "TestArgument2", new TestJsonObject() },
+                });
 
             Assert.AreEqual(
                 new FileContent("./TestData/MultiArgumentsPostBody.txt").ToString().Replace("\r", string.Empty),
@@ -58,12 +57,10 @@ namespace WebRequest.Tests
         {
             var fakeRequestHandler = new FkHttpMessageHandler("Test message");
             await new Elegant.WebRequest(
-                "http://reqres.in/api/users",
-                fakeRequestHandler
-            )
-            .WithMethod(HttpMethod.Post)
-            .WithBody(new TestJsonObject())
-            .EnsureSuccessAsync();
+                    "http://reqres.in/api/users",
+                    fakeRequestHandler
+                )
+                .PostAsync(new TestJsonObject());
 
             Assert.AreEqual(
                 @"Request: http://reqres.in/api/users
@@ -83,12 +80,11 @@ namespace WebRequest.Tests
                 "http://reqres.in/api/users",
                 fakeRequestHandler
             )
-            .WithMethod(HttpMethod.Post)
-            .WithBody(@"{
+            .PostAsync(
+                @"{
                   ""FirstName"": ""Test First Name"",
                   ""LastName"": ""Test Last Name""
-                }")
-            .EnsureSuccessAsync();
+                }");
 
             Assert.AreEqual(
                 @"Request: http://reqres.in/api/users

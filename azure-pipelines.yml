@@ -30,7 +30,7 @@ steps:
     restoreSolution: '$(solution)'
 - task: SonarCloudPrepare@1
   inputs:
-    SonarCloud: 'Sonar Cloud'
+    SonarCloud: 'SonarCloud'
     organization: 'deniszhukovski'
     scannerMode: 'MSBuild'
     projectKey: 'DenisZhukovski_WebRequest.Elegant'

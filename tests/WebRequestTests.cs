@@ -95,6 +95,41 @@ namespace WebRequest.Tests
                 fakeRequestHandler.RequestsAsString[0].NoNewLines()
             );
         }
+        
+        [Test]
+        public async Task PostHttpContent()
+        {
+            var fakeRequestHandler = new FkHttpMessageHandler("Test message");
+            await new Elegant.WebRequest(
+                    "http://reqres.in/api/users",
+                    fakeRequestHandler
+                )
+                .PostAsync(
+                    new StringContent(
+                        @"Hello world"
+                    )
+                );
+
+            Assert.AreEqual(
+                @"Request: http://reqres.in/api/users
+                PostBody: Hello world".NoNewLines(),
+                fakeRequestHandler.RequestsAsString[0].NoNewLines()
+            );
+        }
+        
+        [Test]
+        public async Task GetAsync()
+        {
+            Assert.AreEqual(
+                @"Test message",
+                await (await new Elegant.WebRequest(
+                        "http://reqres.in/api/users",
+                        new FkHttpMessageHandler("Test message")
+                     )
+                     .GetAsync("/hello"))
+                     .Content.ReadAsStringAsync()
+            );
+        }
 
         [Test]
         public void WebRequestToString()

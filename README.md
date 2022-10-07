@@ -42,7 +42,7 @@ The main goal of this approach is to become a staple component for the SDKs that
 ## Post Web Form
 The example below shows how to generate web form post request and send it to the server.
 ```cs
-_webRequest
+await _webRequest
     .WithMethod(System.Net.Http.HttpMethod.Post)
     .WithBody(
          new Dictionary<string, IJsonObject>
@@ -51,6 +51,31 @@ _webRequest
             { "json", new JsonObject(...) }
          })
     .EnsureSuccessAsync();
+
+// Short Form
+await _webRequest.PostAsync(
+   new Dictionary<string, IJsonObject>
+   {
+      { "testData", new SimpleString("some text data") },
+      { "json", new JsonObject(...) }
+   })
+);
+```
+
+## Post extensions
+
+To make the requets to be concise there are a couple *PostAsync* extension methods were introduced.
+
+```cs
+await _webRequest.PostAsync("Hello world");
+
+await _webRequest.PostAsync(
+   new Dictionary<string, IJsonObject>
+   {
+      { "testData", new SimpleString("some text data") },
+      { "json", new JsonObject(...) }
+   })
+);
 ```
 
 ## Useful extension
@@ -85,6 +110,14 @@ public static class WebRequestExtensions
    {
       return request.WithBody(new SimpleString(body.ToString()));
    }
+
+   public static Task PostAsync(this IWebRequest request, JObject body)
+        {
+            return request
+                .WithMethod(HttpMethod.Post)
+                .WithBody(body)
+                .EnsureSuccessAsync();
+        }
 
    public static async Task<IList<T>> SelectAsync<T>(
       this IWebRequest request,

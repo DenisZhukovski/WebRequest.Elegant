@@ -22,15 +22,14 @@ namespace WebRequest.Tests
         {
             var fakeRequestHandler = new FkHttpMessageHandler("Test message");
             await new Elegant.WebRequest(
-                "http://reqres.in/api/users",
-                fakeRequestHandler
-            )
-            .WithMethod(HttpMethod.Post)
-            .WithBody(new Dictionary<string, IJsonObject>
-            {
-                { "TestArgument1", new SimpleString("Hello World") },
-                { "TestArgument2", new TestJsonObject() },
-            }).GetResponseAsync();
+                    "http://reqres.in/api/users",
+                    fakeRequestHandler
+                )
+                .PostAsync(new Dictionary<string, IJsonObject>
+                {
+                    { "TestArgument1", new SimpleString("Hello World") },
+                    { "TestArgument2", new TestJsonObject() },
+                });
 
             Assert.AreEqual(
                 new FileContent("./TestData/MultiArgumentsPostBody.txt").ToString().Replace("\r", string.Empty),
@@ -58,12 +57,10 @@ namespace WebRequest.Tests
         {
             var fakeRequestHandler = new FkHttpMessageHandler("Test message");
             await new Elegant.WebRequest(
-                "http://reqres.in/api/users",
-                fakeRequestHandler
-            )
-            .WithMethod(HttpMethod.Post)
-            .WithBody(new TestJsonObject())
-            .EnsureSuccessAsync();
+                    "http://reqres.in/api/users",
+                    fakeRequestHandler
+                )
+                .PostAsync(new TestJsonObject());
 
             Assert.AreEqual(
                 @"Request: http://reqres.in/api/users
@@ -83,12 +80,11 @@ namespace WebRequest.Tests
                 "http://reqres.in/api/users",
                 fakeRequestHandler
             )
-            .WithMethod(HttpMethod.Post)
-            .WithBody(@"{
+            .PostAsync(
+                @"{
                   ""FirstName"": ""Test First Name"",
                   ""LastName"": ""Test Last Name""
-                }")
-            .EnsureSuccessAsync();
+                }");
 
             Assert.AreEqual(
                 @"Request: http://reqres.in/api/users
@@ -97,6 +93,41 @@ namespace WebRequest.Tests
                   ""LastName"": ""Test Last Name""
                 }".NoNewLines(),
                 fakeRequestHandler.RequestsAsString[0].NoNewLines()
+            );
+        }
+        
+        [Test]
+        public async Task PostHttpContent()
+        {
+            var fakeRequestHandler = new FkHttpMessageHandler("Test message");
+            await new Elegant.WebRequest(
+                    "http://reqres.in/api/users",
+                    fakeRequestHandler
+                )
+                .PostAsync(
+                    new StringContent(
+                        @"Hello world"
+                    )
+                );
+
+            Assert.AreEqual(
+                @"Request: http://reqres.in/api/users
+                PostBody: Hello world".NoNewLines(),
+                fakeRequestHandler.RequestsAsString[0].NoNewLines()
+            );
+        }
+        
+        [Test]
+        public async Task GetAsync()
+        {
+            Assert.AreEqual(
+                @"Test message",
+                await (await new Elegant.WebRequest(
+                        "http://reqres.in/api/users",
+                        new FkHttpMessageHandler("Test message")
+                     )
+                     .GetAsync("/hello"))
+                     .Content.ReadAsStringAsync()
             );
         }
 

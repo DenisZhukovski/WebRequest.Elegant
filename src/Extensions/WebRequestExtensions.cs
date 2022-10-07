@@ -43,6 +43,46 @@ namespace WebRequest.Elegant
             return request.WithPath(new Uri(request.Uri.Uri().AbsoluteUri + url));
         }
 
+        public static Task PostAsync(this IWebRequest request, IJsonObject body)
+        {
+            return request
+                .WithMethod(HttpMethod.Post)
+                .WithBody(body)
+                .EnsureSuccessAsync();
+        }
+
+        public static Task PostAsync(this IWebRequest request, string body)
+        {
+            return request
+                .WithMethod(HttpMethod.Post)
+                .WithBody(body)
+                .EnsureSuccessAsync();
+        }
+
+        public static Task PostAsync(this IWebRequest request, Dictionary<string, IJsonObject> body)
+        {
+            return request
+                .WithMethod(HttpMethod.Post)
+                .WithBody(body)
+                .EnsureSuccessAsync();
+        }
+
+        public static Task PostAsync(this IWebRequest request, HttpContent content)
+        {
+            return request
+                .WithMethod(HttpMethod.Post)
+                .WithBody(content)
+                .EnsureSuccessAsync();
+        }
+
+        public static Task<HttpResponseMessage> GetAsync(this IWebRequest request, string relativePath)
+        {
+            return request
+                .WithMethod(HttpMethod.Get)
+                .WithRelativePath(relativePath)
+                .GetResponseAsync();
+        }
+
         public static IWebRequest WithBody(this IWebRequest request, string body)
         {
             return request.WithBody(new StringContent(body));

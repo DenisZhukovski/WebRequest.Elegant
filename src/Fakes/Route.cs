@@ -8,14 +8,19 @@ namespace WebRequest.Elegant.Fakes
 {
     public class Route : IRoute
     {
-        private readonly Dictionary<Uri, HttpResponseMessage> _responses;
+        private readonly Dictionary<Uri, Func<HttpResponseMessage>> _responses;
 
         public Route()
-            : this(new Dictionary<Uri, HttpResponseMessage>())
+            : this(new Dictionary<Uri, Func<HttpResponseMessage>>())
         {
         }
 
         public Route(Dictionary<string, string> responses)
+            : this(ToDictionary(responses))
+        {
+        }
+        
+        public Route(Dictionary<string, Func<string>> responses)
             : this(ToDictionary(responses))
         {
         }
@@ -25,16 +30,19 @@ namespace WebRequest.Elegant.Fakes
         {
         }
 
-        public Route(Dictionary<Uri, HttpResponseMessage> responses)
+        public Route(Dictionary<Uri, Func<HttpResponseMessage>> responses)
         {
             _responses = responses;
         }
 
         public Route With(Uri uri, string filePath)
         {
-            var newRoutes = new Dictionary<Uri, HttpResponseMessage>(_responses);
-            newRoutes.Add(uri, ToResponseMessage(File.ReadAllText(filePath)));
-            return new Route(newRoutes);
+            return new Route(
+                new Dictionary<Uri, Func<HttpResponseMessage>>(_responses)
+                {
+                    { uri, () => ToResponseMessage(File.ReadAllText(filePath)) }
+                }
+            );
         }
 
         public bool Matches(Uri uri)
@@ -49,12 +57,12 @@ namespace WebRequest.Elegant.Fakes
 
         public HttpResponseMessage Response(Uri uri)
         {
-            if (_responses.TryGetValue(uri, out HttpResponseMessage response))
+            if (_responses.TryGetValue(uri, out Func<HttpResponseMessage> response))
             {
-                return response;
+                return response();
             }
 
-            return _responses[new Uri(uri.GetLeftPart(UriPartial.Path))];
+            return _responses[new Uri(uri.GetLeftPart(UriPartial.Path))]();
         }
 
         private static HttpResponseMessage ToResponseMessage(string data)
@@ -65,22 +73,32 @@ namespace WebRequest.Elegant.Fakes
             };
         }
 
-        private static Dictionary<Uri, HttpResponseMessage> ToDictionary(Dictionary<string, string> responses)
+        private static Dictionary<string, Func<string>> ToDictionary(Dictionary<string, string> responses)
         {
-            var messagesResponses = new Dictionary<Uri, HttpResponseMessage>();
+            var messagesResponses = new Dictionary<string, Func<string>>();
             foreach (var key in responses.Keys)
             {
-                messagesResponses.Add(new Uri(key), ToResponseMessage(responses[key]));
+                messagesResponses.Add(key, () => responses[key]);
+            }
+            return messagesResponses;
+        }
+        
+        private static Dictionary<Uri, Func<HttpResponseMessage>> ToDictionary(Dictionary<string, Func<string>> responses)
+        {
+            var messagesResponses = new Dictionary<Uri, Func<HttpResponseMessage>>();
+            foreach (var key in responses.Keys)
+            {
+                messagesResponses.Add(new Uri(key), () => ToResponseMessage(responses[key]()));
             }
             return messagesResponses;
         }
 
-        private static Dictionary<Uri, HttpResponseMessage> ToDictionary(Dictionary<string, HttpResponseMessage> responses)
+        private static Dictionary<Uri, Func<HttpResponseMessage>> ToDictionary(Dictionary<string, HttpResponseMessage> responses)
         {
-            var uriResponses = new Dictionary<Uri, HttpResponseMessage>();
+            var uriResponses = new Dictionary<Uri, Func<HttpResponseMessage>>();
             foreach (var key in responses.Keys)
             {
-                uriResponses.Add(new Uri(key), responses[key]);
+                uriResponses.Add(new Uri(key), () => responses[key]);
             }
             return uriResponses;
         }

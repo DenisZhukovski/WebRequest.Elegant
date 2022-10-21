@@ -4,12 +4,7 @@ using System.Threading.Tasks;
 
 namespace WebRequest.Elegant.Fakes
 {
-    /// <summary>
-    /// The purpose is to assist during the unit testing.
-    /// The message handler can respond with different messages based on configured routes.
-    /// If configured route can not find a match for the request then it delegates handling to base class.
-    /// </summary>
-    public class RoutedHttpMessageHandler : HttpClientHandler
+    public class RoutedHttpMessageHandler : DelegatingHandler
     {
         private readonly IRoute _requestRoute;
 
@@ -18,6 +13,17 @@ namespace WebRequest.Elegant.Fakes
         /// </summary>
         /// <param name="requestRoute">Manages the responses for http requests.</param>
         public RoutedHttpMessageHandler(IRoute requestRoute)
+            : this(requestRoute, new HttpClientHandler())
+        {
+        }
+        
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RoutedHttpMessageHandler"/> class.
+        /// </summary>
+        /// <param name="requestRoute">Manages the responses for http requests.</param>
+        /// <param name="inner">Inner http message handler</param>
+        public RoutedHttpMessageHandler(IRoute requestRoute, HttpMessageHandler inner)
+            : base(inner)
         {
             _requestRoute = requestRoute;
         }
@@ -32,11 +38,9 @@ namespace WebRequest.Elegant.Fakes
             HttpRequestMessage request,
             CancellationToken cancellationToken)
         {
-            if (_requestRoute.Matches(request.RequestUri))
-            {
-                return Task.FromResult(_requestRoute.Response(request.RequestUri));
-            }
-            return base.SendAsync(request, cancellationToken);
+            return _requestRoute.Matches(request.RequestUri)
+                ? Task.FromResult(_requestRoute.Response(request.RequestUri))
+                : base.SendAsync(request, cancellationToken);
         }
     }
 }

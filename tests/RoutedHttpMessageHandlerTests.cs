@@ -10,7 +10,7 @@ namespace WebRequest.Tests
     public class RoutedHttpMessageHandlerTests
     {
         [Test]
-        public async Task WebRequestReceivesDataFromRouteHandler()
+        public async Task RouteHandlerWithStaticResponse()
         {
             Assert.AreEqual(
                 "Hello world",
@@ -25,9 +25,27 @@ namespace WebRequest.Tests
                 ).ReadAsStringAsync()
             );
         }
+        
+        [Test]
+        public async Task RouteHandlerWithDelegate()
+        {
+            var count = 23;
+            Assert.AreEqual(
+                "Hello world 23",
+                await new Elegant.WebRequest(
+                    new Uri("http://reqres.in/api/users"),
+                    new RoutedHttpMessageHandler(
+                        new Route(new Dictionary<string, Func<string>>
+                        {
+                            { "http://reqres.in/api/users", () => "Hello world " + count }
+                        })
+                    )
+                ).ReadAsStringAsync()
+            );
+        }
 
         [Test]
-        public async Task WebRequestReceivesDataFromRouteHandlerAndDataFile()
+        public async Task RouteHandlerAndDataFile()
         {
             Assert.AreEqual(
                 "Hello world testing test.",

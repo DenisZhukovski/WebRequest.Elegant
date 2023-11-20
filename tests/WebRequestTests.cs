@@ -7,6 +7,7 @@ using NUnit.Framework;
 using WebRequest.Elegant;
 using WebRequest.Elegant.Fakes;
 using WebRequest.Elegant.Extensions;
+using NUnit.Framework.Internal;
 
 namespace WebRequest.Tests
 {
@@ -395,6 +396,20 @@ namespace WebRequest.Tests
                 {
                     { "test", "test1" }
                 }
+            );
+        }
+
+        [Test]
+        public void QueryParamWithoutValue()
+        {
+            Assert.AreEqual(
+                @"Uri: http://reqres.in:80/api/users/?test
+                    Token: 
+                    Body: ".NoNewLines(),
+                new Elegant.WebRequest(new Uri("http://reqres.in/api/users/"))
+                    .WithQueryParams("test")
+                    .ToString()
+                    .NoNewLines()
             );
         }
 

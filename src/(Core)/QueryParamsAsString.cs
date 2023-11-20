@@ -30,7 +30,15 @@ namespace WebRequest.Elegant
                 stringBuilder.Append("?");
                 foreach (var queryParamsKey in _queryParams.Keys)
                 {
-                    stringBuilder.Append($"{queryParamsKey}={_queryParams[queryParamsKey]}&");
+                    var value = _queryParams[queryParamsKey];
+                    if (!string.IsNullOrEmpty(value))
+                    {
+                        stringBuilder.Append($"{queryParamsKey}={_queryParams[queryParamsKey]}&");
+                    }
+                    else
+                    {
+                        stringBuilder.Append($"{queryParamsKey}&");
+                    }
                 }
 
                 stringBuilder.Remove(stringBuilder.Length - 1, 1); // remove last &

@@ -217,6 +217,23 @@ namespace WebRequest.Elegant
             );
         }
 
+        public IWebRequest WithQueryParams(params string[] onlyKeys)
+        {
+            var noValues = new Dictionary<string, string>();
+            foreach(var key in onlyKeys)
+            {
+                noValues.Add(key, string.Empty);
+            }
+            return new WebRequest(
+                Uri,
+                _token,
+                _httpMethod,
+                _body,
+                noValues,
+                _httpClient
+            );
+        }
+
         public IWebRequest WithQueryParams(Dictionary<string, string> parameters)
         {
             return new WebRequest(

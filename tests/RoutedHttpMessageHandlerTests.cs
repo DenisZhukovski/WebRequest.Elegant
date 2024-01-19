@@ -12,8 +12,7 @@ namespace WebRequest.Tests
         [Test]
         public async Task RouteHandlerWithStaticResponse()
         {
-            Assert.AreEqual(
-                "Hello world",
+            Assert.That(
                 await new Elegant.WebRequest(
                     new Uri("http://reqres.in/api/users"),
                     new RoutedHttpMessageHandler(
@@ -22,7 +21,8 @@ namespace WebRequest.Tests
                             { "http://reqres.in/api/users","Hello world" }
                         })
                     )
-                ).ReadAsStringAsync()
+                ).ReadAsStringAsync(),
+                Is.EqualTo("Hello world")
             );
         }
         
@@ -30,8 +30,7 @@ namespace WebRequest.Tests
         public async Task RouteHandlerWithDelegate()
         {
             var count = 23;
-            Assert.AreEqual(
-                "Hello world 23",
+            Assert.That(
                 await new Elegant.WebRequest(
                     new Uri("http://reqres.in/api/users"),
                     new RoutedHttpMessageHandler(
@@ -40,15 +39,15 @@ namespace WebRequest.Tests
                             { "http://reqres.in/api/users", () => "Hello world " + count }
                         })
                     )
-                ).ReadAsStringAsync()
+                ).ReadAsStringAsync(),
+                Is.EqualTo("Hello world 23")
             );
         }
 
         [Test]
         public async Task RouteHandlerAndDataFile()
         {
-            Assert.AreEqual(
-                "Hello world testing test.",
+            Assert.That(
                 await new Elegant.WebRequest(
                     new Uri("http://reqres.in/api/users"),
                     new RoutedHttpMessageHandler(
@@ -57,56 +56,69 @@ namespace WebRequest.Tests
                             "./TestData/TestUploadFile.txt"
                         )
                     )
-                ).ReadAsStringAsync()
+                ).ReadAsStringAsync(),
+                Is.EqualTo("Hello world testing test.")
             );
         }
 
         [Test]
         public async Task ByFullMatch()
         {
-            Assert.AreEqual(
-                "Hello world testing test.",
+            Assert.That(
                 await new Elegant.WebRequest(
                     new Uri("http://reqres.in/api/users"),
-                    new RoutedHttpMessageHandler(
-                        new Route(new Dictionary<string, string>
-                        {
-                            { "http://reqres.in/api/users", "Hello world testing test." }
-                        })
+                    new Route(
+                        "http://reqres.in/api/users",
+                        "Hello world testing test."
                     )
-                ).ReadAsStringAsync()
+                ).ReadAsStringAsync(),
+                Is.EqualTo("Hello world testing test.")
+            );
+        }
+        
+        [Test]
+        public async Task DynamicRoute()
+        {
+            int counter = 0;
+            var webRequest = new Elegant.WebRequest(
+                new Uri("http://reqres.in/api/users"),
+                new Route(
+                    new RouteResponse(
+                        "http://reqres.in/api/users",
+                        () => "Hello world testing test." + counter++
+                    )
+                )
+            );
+            await webRequest.ReadAsStringAsync();
+            Assert.That(
+                await webRequest.ReadAsStringAsync(),
+                Is.EqualTo("Hello world testing test.1")
             );
         }
 
         [Test]
         public async Task ByUriMatchButIgnoreQueryParameters()
         {
-            Assert.AreEqual(
-                "Hello world testing test.",
+            Assert.That(
                 await new Elegant.WebRequest(
-                    new Uri("http://reqres.in/api/users"),
-                    new RoutedHttpMessageHandler(
-                        new Route(new Dictionary<string, string>
+                        new Uri("http://reqres.in/api/users"),
+                        new Route("http://reqres.in/api/users", "Hello world testing test.")
+                    ).WithQueryParams(
+                        new Dictionary<string, string>
                         {
-                            { "http://reqres.in/api/users", "Hello world testing test." }
-                        })
+                            { "params1", "1" },
+                            { "param2", "2" }
+                        }
                     )
-                ).WithQueryParams(
-                    new Dictionary<string, string>
-                    {
-                        { "params1", "1" },
-                        { "param2", "2" }
-                    }
-                )
-                .ReadAsStringAsync()
+                    .ReadAsStringAsync(),
+                Is.EqualTo("Hello world testing test.")
             );
         }
 
         [Test]
         public async Task ByFullMatchPriority()
         {
-            Assert.AreEqual(
-                "Hello full match.",
+            Assert.That(
                 await new Elegant.WebRequest(
                     new Uri("http://reqres.in/api/users"),
                     new RoutedHttpMessageHandler(
@@ -116,14 +128,13 @@ namespace WebRequest.Tests
                             { "http://reqres.in/api/users?params1=1&param2=2", "Hello full match." }
                         })
                     )
-                ).WithQueryParams(
-                    new Dictionary<string, string>
-                    {
-                        { "params1", "1" },
-                        { "param2", "2" }
-                    }
-                )
-                .ReadAsStringAsync()
+                ).WithQueryParams(new Dictionary<string, string>
+                {
+                    { "params1", "1" },
+                    { "param2", "2" }
+                })
+                .ReadAsStringAsync(),
+                Is.EqualTo("Hello full match.")
             );
         }
     }

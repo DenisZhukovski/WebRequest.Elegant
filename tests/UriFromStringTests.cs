@@ -9,54 +9,54 @@ namespace WebRequest.Tests
         [Test]
         public void EqualTheSameUri()
         {
-            Assert.AreEqual(
+            Assert.That(
                 new UriFromString("http://reqres.in/api/users"),
-                new UriFromString("http://reqres.in/api/users")
+                Is.EqualTo(new UriFromString("http://reqres.in/api/users"))
             );
         }
 
         [Test]
         public void NoEqualWhenDifferentUri()
         {
-            Assert.AreNotEqual(
+            Assert.That(
                 new UriFromString("http://reqres.in/api/users"),
-                new UriFromString("http://reqres.in/api/users2")
+                Is.Not.EqualTo(new UriFromString("http://reqres.in/api/users2"))
             );
         }
 
         [Test]
         public void EqualToTheSameUri()
         {
-            Assert.AreEqual(
-                new UriFromString("http://reqres.in/api/users"),
-                new Uri("http://reqres.in/api/users")
+            Assert.That(
+                new Uri("http://reqres.in/api/users"),
+                Is.EqualTo(new UriFromString("http://reqres.in/api/users"))
             );
         }
 
         [Test]
         public void NotEqualToDiffUri()
         {
-            Assert.AreNotEqual(
+            Assert.That(
                 new UriFromString("http://reqres.in/api/users"),
-                new Uri("http://reqres.in/api/users2")
+                Is.Not.EqualTo(new Uri("http://reqres.in/api/users2"))
             );
         }
 
         [Test]
         public void EqualToTheSameUriString()
         {
-            Assert.AreEqual(
-                new UriFromString("http://reqres.in/api/users"),
-                "http://reqres.in/api/users"
+            Assert.That(
+                "http://reqres.in/api/users",
+                Is.EqualTo(new UriFromString("http://reqres.in/api/users"))
             );
         }
 
         [Test]
         public void NotEqualToDiffUriString()
         {
-            Assert.AreNotEqual(
+            Assert.That(
                 new UriFromString("http://reqres.in/api/users"),
-                "http://reqres.in/api/users2"
+                Is.Not.EqualTo("http://reqres.in/api/users2")
             );
         }
     }

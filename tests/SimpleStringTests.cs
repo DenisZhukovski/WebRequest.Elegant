@@ -8,9 +8,9 @@ namespace WebRequest.Tests
         [Test]
         public void SimpleString_ToJson()
         {
-            Assert.AreEqual(
-                "test string",
-                new SimpleString("test string").ToJson()
+            Assert.That(
+                new SimpleString("test string").ToJson(),
+                Is.EqualTo("test string")
             );
         }
     }

@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using WebRequest.Elegant.Core;
+using WebRequest.Elegant.Fakes;
 
 [assembly: InternalsVisibleTo("WebRequest.Tests")]
 
@@ -46,6 +47,13 @@ namespace WebRequest.Elegant
         {
         }
 
+        public WebRequest(
+            Uri uri,
+            IRoute route
+        ) : this(uri, new RoutedHttpMessageHandler(route))
+        {
+        }
+        
         public WebRequest(
             Uri uri,
             HttpMessageHandler messageHandler

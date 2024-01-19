@@ -12,9 +12,9 @@ namespace WebRequest.Tests
             var token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9";
             var httpRequestMessage = new System.Net.Http.HttpRequestMessage();
             await new HttpAuthenticationHeaderToken(token).InjectToAsync(httpRequestMessage).ConfigureAwait(false);
-            Assert.AreEqual(
-                token,
-                httpRequestMessage.Headers.Authorization.Scheme
+            Assert.That(
+                httpRequestMessage.Headers.Authorization.Scheme,
+                Is.EqualTo(token)
             );
         }
 
@@ -27,44 +27,45 @@ namespace WebRequest.Tests
             await token.ProlongateFromAsync(new System.Net.Http.HttpResponseMessage()).ConfigureAwait(false);
             await token.InjectToAsync(httpRequestMessage).ConfigureAwait(false);
 
-            Assert.IsNull(
-                httpRequestMessage.Headers.Authorization
+            Assert.That(
+                httpRequestMessage.Headers.Authorization,
+                Is.Null
             );
         }
 
         [Test]
         public void TheSameTokensIsEqual()
         {
-            Assert.AreEqual(
+            Assert.That(
                 new HttpAuthenticationHeaderToken("eyJ0e"),
-                new HttpAuthenticationHeaderToken("eyJ0e")
+                Is.EqualTo(new HttpAuthenticationHeaderToken("eyJ0e"))
             );
         }
 
         [Test]
         public void DifferentTokensIsNotEqual()
         {
-            Assert.AreNotEqual(
+            Assert.That(
                 new HttpAuthenticationHeaderToken("123"),
-                new HttpAuthenticationHeaderToken("987")
+                Is.Not.EqualTo(new HttpAuthenticationHeaderToken("987"))
             );
         }
 
         [Test]
         public void NullIsNotEqualToken()
         {
-            Assert.AreNotEqual(
+            Assert.That(
                 new HttpAuthenticationHeaderToken("eyJ0e"),
-                null
+                Is.Not.EqualTo(null)
             );
         }
 
         [Test]
         public void TheSameTokensHasSameHashcodes()
         {
-            Assert.AreEqual(
+            Assert.That(
                 new HttpAuthenticationHeaderToken("eyJ0e").GetHashCode(),
-                new HttpAuthenticationHeaderToken("eyJ0e").GetHashCode()
+                Is.EqualTo(new HttpAuthenticationHeaderToken("eyJ0e").GetHashCode())
             );
         }
     }

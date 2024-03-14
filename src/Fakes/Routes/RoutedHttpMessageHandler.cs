@@ -38,8 +38,8 @@ namespace WebRequest.Elegant.Fakes
             HttpRequestMessage request,
             CancellationToken cancellationToken)
         {
-            return _requestRoute.Matches(request.RequestUri)
-                ? Task.FromResult(_requestRoute.Response(request.RequestUri))
+            return _requestRoute.Matches(request)
+                ? Task.FromResult(_requestRoute.Response(request))
                 : base.SendAsync(request, cancellationToken);
         }
     }

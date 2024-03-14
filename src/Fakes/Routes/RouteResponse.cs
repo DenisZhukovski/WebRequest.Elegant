@@ -1,5 +1,4 @@
 using System;
-using System.Net;
 using System.Net.Http;
 
 namespace WebRequest.Elegant.Fakes
@@ -7,7 +6,7 @@ namespace WebRequest.Elegant.Fakes
     public class RouteResponse : IResponse
     {
         private readonly Uri _uri;
-        private readonly Func<Uri, HttpResponseMessage> _message;
+        private readonly Func<HttpRequestMessage, HttpResponseMessage> _message;
         
         public RouteResponse(string uri, string message)
             : this(uri, _ => message.ToResponseMessage())
@@ -19,37 +18,43 @@ namespace WebRequest.Elegant.Fakes
         {
         }
         
-        public RouteResponse(string uri, Func<Uri, string> message)
+        public RouteResponse(string uri, Func<HttpRequestMessage, string> message)
             : this(uri, uri => message(uri).ToResponseMessage())
         {
         }
         
-        public RouteResponse(string uri, Func<Uri, HttpResponseMessage> message)
+        public RouteResponse(string uri, Func<HttpRequestMessage, HttpResponseMessage> message)
             : this(new Uri(uri), message)
         {
         }
         
-        public RouteResponse(Uri uri, Func<Uri, HttpResponseMessage> message)
+        public RouteResponse(Uri uri, Func<HttpRequestMessage, HttpResponseMessage> message)
         {
             _uri = uri;
             _message = message;
         }
         
-        public HttpResponseMessage MessageFor(Uri uri)
+        public HttpResponseMessage MessageFor(HttpRequestMessage request)
         {
-            return _message(uri);
+            return _message(request);
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return ReferenceEquals(this, obj) 
-                || (obj is Uri uri && uri.Equals(_uri))
-                || (obj is string uriAsString && uriAsString == _uri.ToString());
+                || (obj is Uri uri && SameUri(uri))
+                || (obj is string uriAsString && uriAsString == _uri.ToString())
+                || (obj is HttpRequestMessage request && SameUri(request.RequestUri));
         }
 
         public override int GetHashCode()
         {
             return _uri.GetHashCode();
+        }
+
+        private bool SameUri(Uri uri)
+        {
+            return uri.Equals(_uri) || new Uri(uri.GetLeftPart(UriPartial.Path)).Equals(_uri);
         }
     }
 }

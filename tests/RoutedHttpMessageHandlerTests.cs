@@ -95,6 +95,26 @@ namespace WebRequest.Tests
                 Is.EqualTo("Hello world testing test.1")
             );
         }
+        
+        [Test]
+        public async Task DynamicRouteForRequest()
+        {
+            int counter = 0;
+            var webRequest = new Elegant.WebRequest(
+                new Uri("http://reqres.in/api/users"),
+                new Route(
+                    new RouteResponse(
+                        "http://reqres.in/api/users",
+                        (request) => "Hello world testing test." + counter++
+                    )
+                )
+            );
+            await webRequest.ReadAsStringAsync();
+            Assert.That(
+                await webRequest.ReadAsStringAsync(),
+                Is.EqualTo("Hello world testing test.1")
+            );
+        }
 
         [Test]
         public async Task ByUriMatchButIgnoreQueryParameters()

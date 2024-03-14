@@ -68,28 +68,21 @@ namespace WebRequest.Elegant.Fakes
             );
         }
 
-        public bool Matches(Uri uri)
+        public bool Matches(HttpRequestMessage request)
         {
-            if (_responses.Any(response => response.Equals(uri)))
+            if (_responses.Any(response => response.Equals(request)))
             {
                 return true;
             }
-
-            var moreGenericUri = new Uri(uri.GetLeftPart(UriPartial.Path));
-            return _responses.Any(response => response.Equals(moreGenericUri));
+           
+            return _responses.Any(response => response.Equals(request));
         }
 
-        public HttpResponseMessage Response(Uri uri)
+        public HttpResponseMessage Response(HttpRequestMessage request)
         {
-            var response = _responses.FirstOrDefault(res => res.Equals(uri));
-            if (response != null)
-            {
-                return response.MessageFor(uri);
-            }
-
-            var moreGenericUri = new Uri(uri.GetLeftPart(UriPartial.Path));
-            response = _responses.First(res => res.Equals(moreGenericUri));
-            return response.MessageFor(moreGenericUri);
+            return _responses
+                .First(res => res.Equals(request))
+                .MessageFor(request);
         }
 
         private static Dictionary<string, Func<string>> ToDictionary(Dictionary<string, string> responses)
@@ -127,7 +120,9 @@ namespace WebRequest.Elegant.Fakes
             var uriResponses = new List<IResponse>();
             foreach (var uri in responses.Keys)
             {
-                uriResponses.Add(new RouteResponse(uri, responseUri => responses[responseUri]()));
+                uriResponses.Add(
+                    new RouteResponse(uri, request => responses[request.RequestUri]())
+                );
             }
             return uriResponses;
         }

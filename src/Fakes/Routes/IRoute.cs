@@ -5,8 +5,8 @@ namespace WebRequest.Elegant.Fakes
 {
     public interface IRoute
     {
-        bool Matches(Uri uri);
+        bool Matches(HttpRequestMessage uri);
 
-        HttpResponseMessage Response(Uri uri);
+        HttpResponseMessage Response(HttpRequestMessage request);
     }
 }

@@ -17,14 +17,15 @@ namespace WebRequest.Elegant.Fakes
         /// Initializes a new instance of the <see cref="FkHttpMessageHandler"/> class.
         /// </summary>
         /// <param name="jsonResponse">Simulated response in json format.</param>
-        public FkHttpMessageHandler(string jsonResponse)
-            : this(new HttpResponseMessage(HttpStatusCode.OK)
+        /// /// <param name="statusCode">Http status code</param>
+        public FkHttpMessageHandler(string jsonResponse, HttpStatusCode statusCode = HttpStatusCode.OK)
+            : this(new HttpResponseMessage(statusCode)
             {
                 Content = new StringContent(jsonResponse),
             })
         {
         }
-
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="FkHttpMessageHandler"/> class.
         /// </summary>

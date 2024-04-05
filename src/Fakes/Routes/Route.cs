@@ -121,7 +121,15 @@ namespace WebRequest.Elegant.Fakes
             foreach (var uri in responses.Keys)
             {
                 uriResponses.Add(
-                    new RouteResponse(uri, request => responses[request.RequestUri]())
+                    new RouteResponse(uri, request =>
+                    {
+                        if (responses.ContainsKey(request.RequestUri))
+                        {
+                            return responses[request.RequestUri]();
+                        }
+
+                        return responses[new Uri(request.RequestUri.GetLeftPart(UriPartial.Path))]();
+                    })
                 );
             }
             return uriResponses;

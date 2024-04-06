@@ -134,6 +134,40 @@ namespace WebRequest.Tests
                 Is.EqualTo("Hello world testing test.")
             );
         }
+        
+        [Test]
+        public async Task ByUriMatchButIgnoreQueryParameters2()
+        {
+            Assert.That(
+                await new Elegant.WebRequest(
+                        new Uri("http://reqres.in"),
+                        new Route(
+                            new Dictionary<string, string>
+                            {
+                                {
+                                    $"http://reqres.in/api/mdm/devices/commands/custommdmcommand",
+                                    "Success1"
+                                },
+                                {
+                                    $"http://reqres.in/api/mdm/devices/commands/changeorganizationgroup",
+                                    "Success2"
+                                },
+                                {
+                                    $"http://reqres.in/api/system/groups/search",
+                                    "Success3"
+                                },
+                            }
+                        )
+                )
+                .WithRelativePath("/api/system/groups/search")
+                .WithQueryParams(new Dictionary<string, string>
+                {
+                    { "groupId", "12345" },
+                })
+                .ReadAsStringAsync(),
+                Is.EqualTo("Success3")
+            );
+        }
 
         [Test]
         public async Task ByFullMatchPriority()

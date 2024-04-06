@@ -52,6 +52,11 @@ namespace WebRequest.Elegant.Fakes
             return _uri.GetHashCode();
         }
 
+        public override string ToString()
+        {
+            return _uri.ToString();
+        }
+
         private bool SameUri(Uri uri)
         {
             return uri.Equals(_uri) || new Uri(uri.GetLeftPart(UriPartial.Path)).Equals(_uri);

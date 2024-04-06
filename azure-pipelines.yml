@@ -39,6 +39,9 @@ steps:
     scannerMode: 'MSBuild'
     projectKey: 'DenisZhukovski_WebRequest.Elegant'
     projectName: 'WebRequest.Elegant'
+    extraProperties: |
+        sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)\**\coverage.opencover.xml
+        sonar.cs.vstest.reportsPaths=$(Agent.TempDirectory)\*.trx
 
 - task: Bash@3
   displayName: Build Solution

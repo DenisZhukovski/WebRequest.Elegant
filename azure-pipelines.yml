@@ -54,7 +54,7 @@ steps:
     publishTestResults: true
     arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true "/p:CoverletOutputFormat=\"opencover,Cobertura\""'
 
-- task: PublishCodeCoverageResults@1
+- task: PublishCodeCoverageResults@2
   displayName: 'Publish code coverage result'
   inputs:
     codeCoverageTool: Cobertura

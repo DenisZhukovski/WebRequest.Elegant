@@ -26,10 +26,12 @@ steps:
 - checkout: self
   persistCredentials: true
   
-- task: NuGetToolInstaller@1
-- task: NuGetCommand@2
+- task: Bash@3
+  displayName: Restore nuget
   inputs:
-    restoreSolution: '$(solution)'
+    targetType: 'inline'
+    script: dotnet restore $(solution)
+
 - task: SonarCloudPrepare@1
   inputs:
     SonarCloud: 'SonarCloud'
@@ -37,33 +39,20 @@ steps:
     scannerMode: 'MSBuild'
     projectKey: 'DenisZhukovski_WebRequest.Elegant'
     projectName: 'WebRequest.Elegant'
-- task: VSBuild@1
-  inputs:
-    solution: '$(solution)'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
 
-- task: VSTest@2
-  displayName: 'Run unit tests'
+- task: Bash@3
+  displayName: Build Solution
   inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
-    testSelector: 'testAssemblies'
-    testAssemblyVer2: | # Required when testSelector == TestAssemblies
-     **\*Tests*.dll
-     !**\*TestAdapter.dll
-     !**\obj\** 
-    searchFolder: '$(System.DefaultWorkingDirectory)'
-    codeCoverageEnabled: true
+    targetType: 'inline'
+    script: dotnet build $(solution) --configuration $(buildConfiguration) --output $(outputDirectory)/
 
-- task: PublishTestResults@2
-  displayName: 'Publish Test Results **/*.trx'
+- task: DotNetCoreCLI@2
+  displayName: 'Run tests'
   inputs:
-    testResultsFormat: VSTest
-    testResultsFiles: '**/*.trx'
-    searchFolder: '$(Build.SourcesDirectory)'
-    failTaskOnFailedTests: true
-    testRunTitle: 'Unit tests'
+    command: 'test'
+    projects: '**/*[Tt]est*/*.csproj'
+    publishTestResults: true
+    arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true "/p:CoverletOutputFormat=\"opencover,Cobertura\""'
 
 - task: PublishCodeCoverageResults@1
   displayName: 'Publish code coverage result'

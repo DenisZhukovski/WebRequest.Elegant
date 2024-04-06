@@ -18,7 +18,7 @@ pool:
   vmImage: 'windows-latest'
 
 variables:
-  solution: '**/*.sln'
+  solution: 'WebRequest.Elegant.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 

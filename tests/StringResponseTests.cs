@@ -27,7 +27,7 @@ public class StringResponseTests : BaseResponseTests
         );
     }
 
-    private static IResponse StringResponse()
+    private static StringResponse StringResponse()
     {
         return new StringResponse(
             "Success"

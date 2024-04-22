@@ -27,7 +27,7 @@ public class ConditionalResponseTests : BaseResponseTests
         );
     }
 
-    private static IResponse ConditionalResponse()
+    private static ConditionalResponse ConditionalResponse()
     {
         return new ConditionalResponse(
             message => message.ContainsAsync("TestRequest"),

@@ -28,7 +28,7 @@ public abstract class BaseResponseTests
     [Test]
     public async Task WebRequest_WithTheResponse()
     {
-        var result = await new Elegant.WebRequest(
+        var response = await new Elegant.WebRequest(
             new Uri("http://reqres.in/api/users"),
             new RoutedHttpMessageHandler(
                 new Route(
@@ -41,7 +41,7 @@ public abstract class BaseResponseTests
         )
         .ReadAsStringAsync();
         Assert.That(
-            () => result,
+            () => response,
             Is.EqualTo(_responseMessage)
         );
     }

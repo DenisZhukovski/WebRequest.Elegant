@@ -9,12 +9,12 @@ namespace WebRequest.Elegant.Fakes
         private readonly Func<HttpRequestMessage, HttpResponseMessage> _responseMessage;
 
         public StringResponse(string responseMessage)
-            : this(_ => responseMessage.ToResponseMessage())
+            : this(() => responseMessage)
         {
         }
 
         public StringResponse(Func<string> responseMessage)
-            : this(_ => responseMessage().ToResponseMessage())
+            : this(_ => responseMessage())
         {
         }
 

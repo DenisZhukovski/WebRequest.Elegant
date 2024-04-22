@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace WebRequest.Elegant.Fakes
 {
@@ -68,21 +68,28 @@ namespace WebRequest.Elegant.Fakes
             );
         }
 
-        public bool Matches(HttpRequestMessage request)
+        public async Task<bool> MatchesAsync(HttpRequestMessage request)
         {
-            if (_responses.Any(response => response.Equals(request)))
+            foreach(var response in _responses)
             {
-                return true;
+                if (await response.MatchesAsync(request).ConfigureAwait(false))
+                {
+                    return true;
+                }
             }
-           
-            return _responses.Any(response => response.Equals(request));
+            return false;
         }
 
-        public HttpResponseMessage Response(HttpRequestMessage request)
+        public async Task<HttpResponseMessage> ResponseAsync(HttpRequestMessage request)
         {
-            return _responses
-                .First(res => res.Equals(request))
-                .MessageFor(request);
+            foreach (var response in _responses)
+            {
+                if (await response.MatchesAsync(request).ConfigureAwait(false))
+                {
+                    return await response.MessageForAsync(request).ConfigureAwait(false);
+                }
+            }
+            throw new InvalidOperationException();
         }
 
         private static Dictionary<string, Func<string>> ToDictionary(Dictionary<string, string> responses)

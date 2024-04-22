@@ -1,12 +1,12 @@
-﻿using System;
-using System.Net.Http;
+﻿using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace WebRequest.Elegant.Fakes
 {
     public interface IRoute
     {
-        bool Matches(HttpRequestMessage uri);
+        Task<bool> MatchesAsync(HttpRequestMessage uri);
 
-        HttpResponseMessage Response(HttpRequestMessage request);
+        Task<HttpResponseMessage> ResponseAsync(HttpRequestMessage request);
     }
 }

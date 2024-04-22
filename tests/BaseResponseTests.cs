@@ -7,18 +7,18 @@ using WebRequest.Elegant.Fakes;
 
 namespace WebRequest.Tests;
 
-public class BaseResponseTests
+public abstract class BaseResponseTests
 {
     private readonly IResponse _response;
     private readonly HttpRequestMessage _requestMessage;
     private readonly string _responseMessage;
 
-    public BaseResponseTests(IResponse response, string requestMessage, string responseMessage)
+    protected BaseResponseTests(IResponse response, string requestMessage, string responseMessage)
         : this(response, new HttpRequestMessage() { Content = new StringContent(requestMessage)}, responseMessage)
     {
     }
 
-    public BaseResponseTests(IResponse response, HttpRequestMessage requestMessage, string responseMessage)
+    protected BaseResponseTests(IResponse response, HttpRequestMessage requestMessage, string responseMessage)
     {
         _response = response;
         _requestMessage = requestMessage;

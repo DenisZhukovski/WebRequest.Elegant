@@ -6,10 +6,10 @@ namespace WebRequest.Elegant
 {
     public static class HttpRequestMessageExtensions
     {
-        public static async Task<bool> ContainsAsync(this HttpRequestMessage message, Func<string, bool> condition)
+        public static async Task<bool> ContainsAsync(this HttpRequestMessage message, string text)
         {
             var stringContent = await message.Content.ReadAsStringAsync().ConfigureAwait(false);
-            return condition(stringContent);
+            return stringContent.Contains(text);
         }
     }
 }

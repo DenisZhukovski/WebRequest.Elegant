@@ -23,7 +23,7 @@ public class ConditionalResponseTests : BaseResponseTests
     {
         return Assert.ThatAsync(
             () => ConditionalResponse().MatchesAsync(new HttpRequestMessage() { Content = new StringContent("WrongRequest")}),
-            Is.EqualTo(true)
+            Is.EqualTo(false)
         );
     }
 

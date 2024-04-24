@@ -27,6 +27,24 @@ public class StringResponseTests : BaseResponseTests
         );
     }
 
+    [Test]
+    public async Task AlwaysAppliedFirstResponse()
+    {
+        Assert.That(
+            await new Elegant.WebRequest(
+                    new Uri("http://reqres.in/api/users"),
+                    new RoutedHttpMessageHandler(
+                        new Route(
+                            new StringResponse("First response"),
+                            new StringResponse("Second response")
+                        )
+                    )
+                )
+                .ReadAsStringAsync(),
+            Is.EqualTo("First response")
+        );
+    }
+
     private static StringResponse StringResponse()
     {
         return new StringResponse(

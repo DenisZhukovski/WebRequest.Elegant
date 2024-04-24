@@ -27,6 +27,25 @@ public class ConditionalResponseTests : BaseResponseTests
         );
     }
 
+    [Test]
+    public async Task Match_WhenConditionIsTrue()
+    {
+        Assert.That(
+            await new Elegant.WebRequest(
+                    new Uri("http://reqres.in/api/users"),
+                    new RoutedHttpMessageHandler(
+                        new Route(
+                            new ConditionalResponse(message => message.ContainsAsync("First"), new StringResponse("Incorrect")),
+                            new ConditionalResponse(message => message.ContainsAsync("Second"), new StringResponse("Correct"))
+                        )
+                    )
+                )
+                .WithBody("Second condition should be matched")
+                .ReadAsStringAsync(),
+            Is.EqualTo("Correct")
+        );
+    }
+
     private static ConditionalResponse ConditionalResponse()
     {
         return new ConditionalResponse(

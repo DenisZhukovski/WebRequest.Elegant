@@ -1,5 +1,6 @@
 using System;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace WebRequest.Elegant.Fakes
 {
@@ -33,10 +34,17 @@ namespace WebRequest.Elegant.Fakes
             _uri = uri;
             _message = message;
         }
-        
-        public HttpResponseMessage MessageFor(HttpRequestMessage request)
+
+        public Task<bool> MatchesAsync(HttpRequestMessage request)
         {
-            return _message(request);
+            return Task.FromResult(
+                SameUri(request.RequestUri)
+            );
+        }
+
+        public Task<HttpResponseMessage> MessageForAsync(HttpRequestMessage request)
+        {
+            return Task.FromResult(_message(request));
         }
 
         public override bool Equals(object? obj)

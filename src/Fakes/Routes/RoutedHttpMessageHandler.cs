@@ -34,13 +34,13 @@ namespace WebRequest.Elegant.Fakes
         /// <param name="request">The request that has to be sent.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Simulated http response message.</returns>
-        protected override Task<HttpResponseMessage> SendAsync(
+        protected override async Task<HttpResponseMessage> SendAsync(
             HttpRequestMessage request,
             CancellationToken cancellationToken)
         {
-            return _requestRoute.Matches(request)
-                ? Task.FromResult(_requestRoute.Response(request))
-                : base.SendAsync(request, cancellationToken);
+            return await _requestRoute.MatchesAsync(request).ConfigureAwait(false)
+                ? await _requestRoute.ResponseAsync(request).ConfigureAwait(false)
+                : await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
         }
     }
 }

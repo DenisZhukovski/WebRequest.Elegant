@@ -1,9 +1,12 @@
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace WebRequest.Elegant.Fakes
 {
     public interface IResponse
     {
-        HttpResponseMessage MessageFor(HttpRequestMessage request);
+        Task<bool> MatchesAsync(HttpRequestMessage request);
+
+        Task<HttpResponseMessage> MessageForAsync(HttpRequestMessage request);
     }
 }

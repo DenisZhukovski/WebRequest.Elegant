@@ -132,6 +132,8 @@ public static class WebRequestExtensions
 }
 ```
 ## In Unit Tests
+
+### FkHttpMessageHandler
 To help developers in writing unit tests WebRequest.Elegant package contains some useful classes to assist.
 <br/>
 [FkHttpMessageHandler](https://github.com/DenisZhukovski/WebRequest.Elegant/blob/master/src/Fakes/FkHttpMessageHandler.cs) can be used to fake all responses from the real server. All the requests' responses will be mocked with configured one.
@@ -141,9 +143,50 @@ await new Elegant.WebRequest(
    new FkHttpMessageHandler("Response message as a text here")
 ).UploadFileAsync(filePath);
 ```
-[RoutedHttpMessageHandler](https://github.com/DenisZhukovski/WebRequest.Elegant/blob/master/src/Fakes/RoutedHttpMessageHandler.cs) can be used to fake a real server responses for particular URIs. All the requests' responses will be mocked by route map.
-### Important:
-[RoutedHttpMessageHandler](https://github.com/DenisZhukovski/WebRequest.Elegant/blob/master/src/Fakes/RoutedHttpMessageHandler.cs) will pass the request to original [HttpClientHandler](https://docs.microsoft.com/en-us/dotnet/api/system.net.http.httpclienthandler?view=net-6.0) when no configured route is found.
+
+### RoutedHttpMessageHandler
+
+[RoutedHttpMessageHandler](https://github.com/DenisZhukovski/WebRequest.Elegant/blob/master/src/Fakes/Routes/RoutedHttpMessageHandler.cs) can be used to fake a real server responses for particular URIs. All the requests' responses will be mocked by route map.
+The fundamental part of the handler is [Route](https://github.com/DenisZhukovski/WebRequest.Elegant/blob/master/src/Fakes/Routes/Route.cs) class that responsible for configuration appropriate response based on incoming request.
+Initially, the class can be initiated with different types of responses which are presented with [IResponse](https://github.com/DenisZhukovski/WebRequest.Elegant/blob/master/src/Fakes/Routes/IResponse.cs) interface.
+
+```cs
+Assert.AreEqual(
+   "Hello world",
+   await new Elegant.WebRequest(
+      new Uri("http://reqres.in/api/users"),
+      new RoutedHttpMessageHandler(
+         new Route(
+            new RouteResponse(
+                "http://reqres.in/api/users", 
+                "Hello world"
+            ),
+            new RouteResponse(
+                "http://reqres.in/api/users", 
+                () => "Hello world testing test." + _counter++
+            ),
+            new RouteResponse(
+                "http://reqres.in/api/users", 
+                httpRequestMessage => _responseBaseOn(httpRequestMessage)
+            ),
+            new ConditionalResponse(
+                httpRequestMessage => httpRequestMessage.ContainsAsync("GetUsers"),
+                new StringResponse("{ ""users"" : [...] }")
+            ),
+            new StringResponse("Response message as a text")
+         )
+      )
+    ).ReadAsStringAsync()
+);
+```
+
+Currently, three types of responses are introduced and can be used:
+- [RouteResponse](https://github.com/DenisZhukovski/WebRequest.Elegant/blob/master/src/Fakes/Routes/RouteResponse.cs) is a response that returns based on requested uri;
+- [StringResponse](https://github.com/DenisZhukovski/WebRequest.Elegant/blob/master/src/Fakes/Routes/StringResponse.cs) - the most simple response that always return the specified string;
+- [ConditionalResponse](https://github.com/DenisZhukovski/WebRequest.Elegant/blob/master/src/Fakes/Routes/ConditionalResponse.cs) - the decorator helps set the condition under which a given response is returned. Can analyse incoming request message.
+
+#### Important:
+[RoutedHttpMessageHandler](https://github.com/DenisZhukovski/WebRequest.Elegant/blob/master/src/Fakes/Routes/RoutedHttpMessageHandler.cs) will pass the request to original [HttpClientHandler](https://docs.microsoft.com/en-us/dotnet/api/system.net.http.httpclienthandler?view=net-6.0) when no configured route is found.
 ```cs
 Assert.AreEqual(
    "Hello world",
@@ -159,6 +202,8 @@ Assert.AreEqual(
     ).ReadAsStringAsync()
 );
 ```
+
+### ProxyHttpMessageHandler
 [ProxyHttpMessageHandler](https://github.com/DenisZhukovski/WebRequest.Elegant/blob/master/src/Fakes/ProxyHttpMessageHandler.cs) can be used to proxy all the requests/responses.
 ```cs
 var proxy = new ProxyHttpMessageHandler();

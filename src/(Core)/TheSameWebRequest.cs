@@ -5,9 +5,9 @@ namespace WebRequest.Elegant.Core
     internal class TheSameWebRequest
     {
         private readonly WebRequest _webRequest;
-        private readonly object _obj;
+        private readonly object? _obj;
 
-        public TheSameWebRequest(WebRequest webRequest, object obj)
+        public TheSameWebRequest(WebRequest webRequest, object? obj)
         {
             _webRequest = webRequest;
             _obj = obj;

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace WebRequest.Elegant
@@ -33,7 +34,7 @@ namespace WebRequest.Elegant
         /// Prolongates the token.
         /// </summary>
         /// <param name="httpResponseMessage">The http response message that contain new token.</param>
-        public Task ProlongateFromAsync(HttpResponseMessage httpResponseMessage)
+        public Task ProlongateFromAsync(HttpResponseMessage httpResponseMessage, CancellationToken token = default)
         {
             // TODO: Extract token from HttpResponseMessage
             _token = "";
@@ -44,7 +45,7 @@ namespace WebRequest.Elegant
         /// Inject token into http request.
         /// </summary>
         /// <param name="request">The http request message.</param>
-        public Task InjectToAsync(HttpRequestMessage request)
+        public Task InjectToAsync(HttpRequestMessage request, CancellationToken token = default)
         {
             if (!string.IsNullOrEmpty(_token))
             {
@@ -68,7 +69,7 @@ namespace WebRequest.Elegant
         /// <param name="x">The target token source.</param>
         /// <param name="y">The token to compare with.</param>
         /// <returns>True if tokens are equal.</returns>
-        public bool Equals(HttpAuthenticationHeaderToken x, HttpAuthenticationHeaderToken y)
+        public bool Equals(HttpAuthenticationHeaderToken? x, HttpAuthenticationHeaderToken? y)
         {
             if (x == null || y == null)
             {
@@ -78,7 +79,7 @@ namespace WebRequest.Elegant
             return x._token == y._token;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return obj is HttpAuthenticationHeaderToken token
                 && Equals(this, token);

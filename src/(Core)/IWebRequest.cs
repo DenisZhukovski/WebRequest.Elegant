@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using WebRequest.Elegant.Core;
 
@@ -20,7 +20,7 @@ namespace WebRequest.Elegant
         /// Executes the web request.
         /// </summary>
         /// <returns>Return response.</returns>
-        Task<HttpResponseMessage> GetResponseAsync();
+        Task<HttpResponseMessage> GetResponseAsync(CancellationToken token = default);
 
         /// <summary>
         /// Creates a new web request with specified path.

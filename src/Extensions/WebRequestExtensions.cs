@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using WebRequest.Elegant.Core;
 using WebRequest.Elegant.Extensions;
@@ -43,44 +44,44 @@ namespace WebRequest.Elegant
             return request.WithPath(new Uri(request.Uri.Uri().AbsoluteUri + url));
         }
 
-        public static Task PostAsync(this IWebRequest request, IJsonObject body)
+        public static Task PostAsync(this IWebRequest request, IJsonObject body, CancellationToken token = default)
         {
             return request
                 .WithMethod(HttpMethod.Post)
                 .WithBody(body)
-                .EnsureSuccessAsync();
+                .EnsureSuccessAsync(token);
         }
 
-        public static Task PostAsync(this IWebRequest request, string body)
+        public static Task PostAsync(this IWebRequest request, string body, CancellationToken token = default)
         {
             return request
                 .WithMethod(HttpMethod.Post)
                 .WithBody(body)
-                .EnsureSuccessAsync();
+                .EnsureSuccessAsync(token);
         }
 
-        public static Task PostAsync(this IWebRequest request, Dictionary<string, IJsonObject> body)
+        public static Task PostAsync(this IWebRequest request, Dictionary<string, IJsonObject> body, CancellationToken token = default)
         {
             return request
                 .WithMethod(HttpMethod.Post)
                 .WithBody(body)
-                .EnsureSuccessAsync();
+                .EnsureSuccessAsync(token);
         }
 
-        public static Task PostAsync(this IWebRequest request, HttpContent content)
+        public static Task PostAsync(this IWebRequest request, HttpContent content, CancellationToken token = default)
         {
             return request
                 .WithMethod(HttpMethod.Post)
                 .WithBody(content)
-                .EnsureSuccessAsync();
+                .EnsureSuccessAsync(token);
         }
 
-        public static Task<HttpResponseMessage> GetAsync(this IWebRequest request, string relativePath)
+        public static Task<HttpResponseMessage> GetAsync(this IWebRequest request, string relativePath, CancellationToken token = default)
         {
             return request
                 .WithMethod(HttpMethod.Get)
                 .WithRelativePath(relativePath)
-                .GetResponseAsync();
+                .GetResponseAsync(token);
         }
 
         public static IWebRequest WithBody(this IWebRequest request, string body)
@@ -105,26 +106,33 @@ namespace WebRequest.Elegant
 
         public static Task<HttpResponseMessage> UploadFileAsync(
             this IWebRequest webRequest,
-            string filePath)
+            string filePath,
+            CancellationToken token = default)
         {
             var fileStream = new FileStream(filePath, FileMode.Open);
-            return webRequest.UploadFileAsync(fileStream, fileStream.Name);
+            return webRequest.UploadFileAsync(fileStream, fileStream.Name, token);
         }
 
         public static async Task<HttpResponseMessage> UploadFileAsync(
             this IWebRequest webRequest,
             Stream fileStream,
-            string fileName)
+            string fileName,
+            CancellationToken token = default)
         {
             try
             {
                 return await webRequest
                     .WithMethod(HttpMethod.Post)
                     .WithBody(fileStream.ToStreamContent(fileName))
-                    .GetResponseAsync();
+                    .GetResponseAsync(token);
             }
             catch (Exception ex)
             {
+                if (ex is TaskCanceledException)
+                {
+                    throw;
+                }
+                
                 throw new InvalidOperationException(
                    $"Web Request error occured for {webRequest}",
                    ex
@@ -132,17 +140,22 @@ namespace WebRequest.Elegant
             }
         }
 
-        public static async Task EnsureSuccessAsync(this IWebRequest request)
+        public static async Task EnsureSuccessAsync(this IWebRequest request, CancellationToken token = default)
         {
             try
             {
                 var response = await request
-                    .GetResponseAsync()
+                    .GetResponseAsync(token)
                     .ConfigureAwait(false);
                 response.EnsureSuccessStatusCode();
             }
             catch (Exception ex)
             {
+                if (ex is TaskCanceledException)
+                {
+                    throw;
+                }
+                
                 throw new InvalidOperationException(
                    $"Web Request error occured for {request}",
                    ex
@@ -150,12 +163,12 @@ namespace WebRequest.Elegant
             }
         }
 
-        public static async Task<string> ReadAsStringAsync(this IWebRequest request)
+        public static async Task<string> ReadAsStringAsync(this IWebRequest request, CancellationToken token = default)
         {
             try
             {
                 var response = await request
-                   .GetResponseAsync()
+                   .GetResponseAsync(token)
                    .ConfigureAwait(false);
                 response.EnsureSuccessStatusCode();
                 return await response.Content
@@ -164,6 +177,11 @@ namespace WebRequest.Elegant
             }
             catch (Exception ex)
             {
+                if (ex is TaskCanceledException)
+                {
+                    throw;
+                }
+                
                 throw new InvalidOperationException(
                    $"Web Request error occured for {request}",
                    ex

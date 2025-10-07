@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using WebRequest.Elegant.Core;
 using WebRequest.Elegant.Fakes;
@@ -195,12 +196,12 @@ namespace WebRequest.Elegant
 
         public IUri Uri { get; }
 
-        public async Task<HttpResponseMessage> GetResponseAsync()
+        public async Task<HttpResponseMessage> GetResponseAsync(CancellationToken token = default)
         {
-            var requestMessage = await RequestMessageAsync(_httpMethod).ConfigureAwait(false);
+            var requestMessage = await RequestMessageAsync(_httpMethod, token).ConfigureAwait(false);
             try
             {
-                return await _httpClient.SendAsync(requestMessage).ConfigureAwait(false);
+                return await _httpClient.SendAsync(requestMessage, token).ConfigureAwait(false);
             }
             finally
             {
@@ -318,9 +319,9 @@ namespace WebRequest.Elegant
             ).ToBool();
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
-            return object.ReferenceEquals(this, obj)
+            return ReferenceEquals(this, obj)
                 || new TheSameWebRequest(this, obj).ToBool();
         }
 
@@ -333,14 +334,14 @@ namespace WebRequest.Elegant
 #endif
         }
 
-        private async Task<HttpRequestMessage> RequestMessageAsync(HttpMethod method)
+        private async Task<HttpRequestMessage> RequestMessageAsync(HttpMethod method, CancellationToken token = default)
         {
             var request = new HttpRequestMessage(
                 method,
                 new QueryParamsAsString(_queryParams).With(Uri.Uri())
             );
             _body.InjectTo(request);
-            await _token.InjectToAsync(request).ConfigureAwait(false);
+            await _token.InjectToAsync(request, token).ConfigureAwait(false);
             return request;
         }
     }

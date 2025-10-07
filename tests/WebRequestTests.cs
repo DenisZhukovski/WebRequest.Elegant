@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
@@ -429,6 +430,19 @@ namespace WebRequest.Tests
                     Body: ".NoNewLines()
                 )
             );
+        }
+        
+        [Test]
+        public void CancelLoading()
+        {
+            Assert.ThrowsAsync<TaskCanceledException>(() =>
+            {
+                var cts = new CancellationTokenSource();
+                cts.Cancel();
+                return new Elegant.WebRequest(
+                    "http://reqres.in/api/users"
+                ).EnsureSuccessAsync(cts.Token);
+            });
         }
 
         public class TestJsonObject : IJsonObject
